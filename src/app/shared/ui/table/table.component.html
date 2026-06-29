@@ -1,0 +1,117 @@
+<!-- Info de range -->
+@if (showPagination && !loading) {
+  <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+    Mostrando {{ rangeStart }} a {{ rangeEnd }} de {{ totalItems }} registros
+  </p>
+}
+
+<!-- Tabela -->
+<div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+  <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+
+    <!-- Cabeçalho -->
+    <thead class="bg-gray-50 dark:bg-gray-700">
+      <tr>
+        @for (col of columns; track col.key) {
+          <th
+            [ngClass]="alignClass(col.align)"
+            [style.width]="col.width"
+            class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+          >
+            {{ col.label }}
+          </th>
+        }
+      </tr>
+    </thead>
+
+    <!-- Corpo -->
+    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+
+      <!-- Skeleton loading -->
+      @if (loading) {
+        @for (row of skeletonRows; track row) {
+          <tr>
+            @for (col of columns; track col.key) {
+              <td class="px-4 py-3">
+                <div class="h-4 bg-gray-200 dark:bg-gray-600 rounded animate-pulse"></div>
+              </td>
+            }
+          </tr>
+        }
+
+      <!-- Vazio -->
+      } @else if (rows.length === 0) {
+        <tr>
+          <td [attr.colspan]="columns.length" class="px-4 py-10 text-center text-gray-400 dark:text-gray-500 text-sm">
+            <i class="ri-inbox-line text-3xl block mb-2"></i>
+            {{ emptyMessage }}
+          </td>
+        </tr>
+
+      <!-- Dados -->
+      } @else {
+        @for (row of rows; track $index) {
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors odd:bg-white dark:odd:bg-gray-800 even:bg-gray-50/50 dark:even:bg-gray-800/50">
+            @for (col of columns; track col.key) {
+              <td [ngClass]="alignClass(col.align)" class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                @if (col.template) {
+                  <ng-container [ngTemplateOutlet]="col.template" [ngTemplateOutletContext]="{ $implicit: row }" />
+                } @else {
+                  {{ getCellValue(row, col.key) }}
+                }
+              </td>
+            }
+          </tr>
+        }
+      }
+
+    </tbody>
+  </table>
+</div>
+
+<!-- Paginação -->
+@if (showPagination) {
+  <div class="flex items-center justify-center gap-1 mt-4">
+    <button
+      (click)="goToPage(1)"
+      [disabled]="currentPage === 1"
+      class="px-2 py-1.5 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed text-gray-600 dark:text-gray-300"
+    >
+      <i class="ri-arrow-left-double-line"></i>
+    </button>
+    <button
+      (click)="goToPage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+      class="px-2 py-1.5 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed text-gray-600 dark:text-gray-300"
+    >
+      <i class="ri-arrow-left-s-line"></i>
+    </button>
+
+    @for (page of pageNumbers; track page) {
+      <button
+        (click)="goToPage(page)"
+        [ngClass]="page === currentPage
+          ? 'bg-[var(--color-primary)] text-white'
+          : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300'"
+        class="px-3 py-1.5 text-sm rounded transition-colors"
+      >
+        {{ page }}
+      </button>
+    }
+
+    <button
+      (click)="goToPage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+      class="px-2 py-1.5 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed text-gray-600 dark:text-gray-300"
+    >
+      <i class="ri-arrow-right-s-line"></i>
+    </button>
+    <button
+      (click)="goToPage(totalPages)"
+      [disabled]="currentPage === totalPages"
+      class="px-2 py-1.5 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed text-gray-600 dark:text-gray-300"
+    >
+      <i class="ri-arrow-right-double-line"></i>
+    </button>
+  </div>
+}

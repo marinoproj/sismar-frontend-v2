@@ -1,0 +1,69 @@
+<aside
+  [ngClass]="{
+    'w-60': !isCollapsed,
+    'w-16': isCollapsed
+  }"
+  class="h-full flex flex-col bg-[var(--color-menu-bg)] text-white transition-all duration-300 overflow-hidden shrink-0"
+>
+  <!-- Logo -->
+  <div class="flex items-center h-16 px-4 border-b border-white/10">
+    @if (!isCollapsed) {
+      <span class="text-xl font-bold truncate">{{ config.appName }}</span>
+    } @else {
+      <i class="ri-apps-line text-2xl mx-auto"></i>
+    }
+  </div>
+
+  <!-- Nav -->
+  <nav class="flex-1 overflow-y-auto py-4 space-y-1 px-2">
+    @for (item of navItems; track item.label) {
+      @if (!item.children) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="bg-white/10 text-white"
+          [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+          (click)="onNavClick()"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/70 hover:bg-white/10 hover:text-white transition-colors"
+          [title]="isCollapsed ? item.label : ''"
+        >
+          <i [class]="item.icon + ' text-xl shrink-0'"></i>
+          @if (!isCollapsed) {
+            <span class="text-sm font-medium truncate">{{ item.label }}</span>
+          }
+        </a>
+      } @else {
+        <div>
+          <button
+            (click)="toggleGroup(item.label)"
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/70 hover:bg-white/10 hover:text-white transition-colors"
+            [title]="isCollapsed ? item.label : ''"
+          >
+            <i [class]="item.icon + ' text-xl shrink-0'"></i>
+            @if (!isCollapsed) {
+              <span class="text-sm font-medium truncate flex-1 text-left">{{ item.label }}</span>
+              <i
+                [class]="isGroupExpanded(item.label) ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line'"
+                class="text-sm"
+              ></i>
+            }
+          </button>
+          @if (isGroupExpanded(item.label) && !isCollapsed) {
+            <div class="ml-4 mt-1 space-y-1">
+              @for (child of item.children; track child.label) {
+                <a
+                  [routerLink]="child.route"
+                  routerLinkActive="bg-white/10 text-white"
+                  (click)="onNavClick()"
+                  class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:bg-white/10 hover:text-white transition-colors text-sm"
+                >
+                  <i [class]="child.icon + ' text-lg shrink-0'"></i>
+                  <span class="truncate">{{ child.label }}</span>
+                </a>
+              }
+            </div>
+          }
+        </div>
+      }
+    }
+  </nav>
+</aside>
