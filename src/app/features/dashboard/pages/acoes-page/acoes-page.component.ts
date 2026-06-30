@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { AcoesService } from '../../services/acoes.service';
-import { KpiCardComponent } from '../../components/kpi-card/kpi-card.component';
-import { TickerCardComponent } from '../../components/ticker-card/ticker-card.component';
+import { KpiCardComponent } from '../../../../shared/ui/kpi-card/kpi-card.component';
+import { TickerCardComponent } from '../../../../shared/ui/ticker-card/ticker-card.component';
 import { PieChartComponent } from '../../../../shared/ui/charts/pie-chart/pie-chart.component';
 import { LineChartComponent } from '../../../../shared/ui/charts/line-chart/line-chart.component';
 import { TableComponent } from '../../../../shared/ui/table/table.component';

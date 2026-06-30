@@ -22,8 +22,8 @@ import { NgClass } from '@angular/common';
           {{ change >= 0 ? '+' : '' }}{{ change }}%
         </span>
       </div>
-      <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">
-        R$ {{ currentValue.toFixed(2).replace('.', ',') }}
+      <p class="text-lg font-semibold text-gray-800 dark:text-white">
+        {{ currency }} {{ currentValue.toFixed(2).replace('.', ',') }}
       </p>
     </div>
   `,
@@ -34,4 +34,5 @@ export class TickerCardComponent {
   @Input({ required: true }) currentValue = 0;
   @Input({ required: true }) change = 0;
   @Input({ required: true }) trend: 'up' | 'down' = 'up';
+  @Input() currency = 'R$';
 }

@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { DashboardService } from '../../services/dashboard.service';
-import { KpiCardComponent } from '../../components/kpi-card/kpi-card.component';
+import { KpiCardComponent } from '../../../../shared/ui/kpi-card/kpi-card.component';
 import { LineChartComponent } from '../../../../shared/ui/charts/line-chart/line-chart.component';
 import { BarChartComponent } from '../../../../shared/ui/charts/bar-chart/bar-chart.component';
 import { AreaChartComponent } from '../../../../shared/ui/charts/area-chart/area-chart.component';
