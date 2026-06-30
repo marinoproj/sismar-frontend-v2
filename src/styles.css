@@ -7,6 +7,8 @@
   --color-primary:    #6C63FF;
   --color-menu-bg:    #18181B;
   --color-header-bg:  #ffffff;
+  --color-text:       #111827;
+  --color-bg:         #f9fafb;
 
   --color-gray-50:  #f9fafb;
   --color-gray-100: #f3f4f6;
@@ -36,6 +38,8 @@
 .dark {
   --color-menu-bg:    #18181B;
   --color-header-bg:  #202026;
+  --color-text:       #FFFFFF;
+  --color-bg:         #1D1D22;
 
   --color-gray-50:  #1D1D22;
   --color-gray-100: #222227;
@@ -63,6 +67,8 @@ body {
   margin: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
+  color: var(--color-text);
+  background-color: var(--color-bg);
 }
 
 .dark {

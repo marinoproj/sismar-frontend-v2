@@ -1,6 +1,6 @@
 import { Component, computed, inject, Input } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { ApexChart, ApexNonAxisChartSeries, ApexTheme, ApexTitleSubtitle, ApexLegend } from 'ng-apexcharts';
+import { ApexChart, ApexNonAxisChartSeries, ApexTheme, ApexTitleSubtitle, ApexLegend, ApexStroke } from 'ng-apexcharts';
 import { ThemeService } from '../../../../core/services/theme.service';
 import { THEME_CONFIG } from '../../../../core/config/theme.config';
 
@@ -13,6 +13,7 @@ import { THEME_CONFIG } from '../../../../core/config/theme.config';
       [series]="data"
       [labels]="labels"
       [chart]="chartConfig()"
+      [stroke]="strokeConfig()"
       [theme]="chartTheme()"
       [title]="titleConfig()"
       [legend]="legendConfig"
@@ -41,9 +42,15 @@ export class PieChartComponent {
     type: this.donut ? 'donut' : 'pie',
     height: this.height,
     background: 'transparent',
+    foreColor: this.theme.currentMode() === 'dark' ? '#A1A1AA' : '#374151',
   }));
 
   readonly legendConfig: ApexLegend = { position: 'bottom' };
+
+  readonly strokeConfig = computed<ApexStroke>(() => ({
+    width: 2,
+    colors: [this.theme.currentMode() === 'dark' ? '#232328' : '#ffffff'],
+  }));
 
   readonly chartTheme = computed<ApexTheme>(() => ({
     mode: this.theme.currentMode() as 'light' | 'dark',

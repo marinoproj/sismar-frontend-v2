@@ -12,7 +12,7 @@ import { ChartData } from '../../../models/chart-data.model';
   template: `
     <apx-chart
       [series]="chartSeries()"
-      [chart]="chartConfig"
+      [chart]="chartConfig()"
       [xaxis]="xAxisConfig"
       [dataLabels]="dataLabels"
       [stroke]="strokeConfig"
@@ -36,13 +36,14 @@ export class LineChartComponent {
 
   readonly chartSeries = computed<ApexAxisChartSeries>(() => this.data as ApexAxisChartSeries);
 
-  readonly chartConfig: ApexChart = {
+  readonly chartConfig = computed<ApexChart>(() => ({
     type: 'line',
     height: this.height,
     background: 'transparent',
+    foreColor: this.theme.currentMode() === 'dark' ? '#A1A1AA' : '#374151',
     toolbar: { show: true },
     zoom: { enabled: false },
-  };
+  }));
 
   readonly xAxisConfig: ApexXAxis = { type: 'category' };
   readonly dataLabels: ApexDataLabels = { enabled: false };

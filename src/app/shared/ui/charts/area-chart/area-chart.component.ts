@@ -41,6 +41,7 @@ export class AreaChartComponent {
     type: 'area',
     height: this.height,
     background: 'transparent',
+    foreColor: this.theme.currentMode() === 'dark' ? '#A1A1AA' : '#374151',
     stacked: this.stacked,
     toolbar: { show: false },
   }));

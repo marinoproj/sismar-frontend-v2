@@ -12,7 +12,7 @@ import { MixedChartData } from '../../../models/chart-data.model';
   template: `
     <apx-chart
       [series]="chartSeries()"
-      [chart]="chartConfig"
+      [chart]="chartConfig()"
       [xaxis]="xAxisConfig"
       [dataLabels]="dataLabels"
       [grid]="gridConfig()"
@@ -37,7 +37,13 @@ export class MixedChartComponent {
     () => this.data as unknown as ApexAxisChartSeries,
   );
 
-  readonly chartConfig: ApexChart = { type: 'line', height: this.height, background: 'transparent', toolbar: { show: false } };
+  readonly chartConfig = computed<ApexChart>(() => ({
+    type: 'line',
+    height: this.height,
+    background: 'transparent',
+    foreColor: this.theme.currentMode() === 'dark' ? '#A1A1AA' : '#374151',
+    toolbar: { show: false },
+  }));
   readonly xAxisConfig: ApexXAxis = { type: 'category' };
   readonly dataLabels: ApexDataLabels = { enabled: false };
 

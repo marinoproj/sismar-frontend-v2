@@ -41,6 +41,7 @@ export class BarChartComponent {
     type: 'bar',
     height: this.height,
     background: 'transparent',
+    foreColor: this.theme.currentMode() === 'dark' ? '#A1A1AA' : '#374151',
     toolbar: { show: false },
   }));
 

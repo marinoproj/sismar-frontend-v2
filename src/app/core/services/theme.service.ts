@@ -11,7 +11,7 @@ export class ThemeService {
 
   init(): void {
     this.applyMode(this.currentMode());
-    this.applyColors();
+    this.applyColors(this.currentMode());
   }
 
   toggleMode(): void {
@@ -19,6 +19,7 @@ export class ThemeService {
     this.currentMode.set(next);
     localStorage.setItem(STORAGE_KEY, next);
     this.applyMode(next);
+    this.applyColors(next);
   }
 
   private resolveInitialMode(): 'light' | 'dark' {
@@ -35,10 +36,11 @@ export class ThemeService {
     }
   }
 
-  private applyColors(): void {
+  private applyColors(mode: 'light' | 'dark'): void {
     const root = document.documentElement;
+    const isDark = mode === 'dark';
     root.style.setProperty('--color-primary', this.config.primaryColor);
-    root.style.setProperty('--color-menu-bg', this.config.menuColor);
-    root.style.setProperty('--color-header-bg', this.config.headerColor);
+    root.style.setProperty('--color-menu-bg', isDark ? (this.config.darkMenuColor ?? this.config.menuColor) : this.config.menuColor);
+    root.style.setProperty('--color-header-bg', isDark ? (this.config.darkHeaderColor ?? this.config.headerColor) : this.config.headerColor);
   }
 }

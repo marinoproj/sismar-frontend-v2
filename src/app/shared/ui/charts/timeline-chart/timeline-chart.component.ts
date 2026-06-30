@@ -12,7 +12,7 @@ import { TimelineData } from '../../../models/chart-data.model';
   template: `
     <apx-chart
       [series]="chartSeries()"
-      [chart]="chartConfig"
+      [chart]="chartConfig()"
       [xaxis]="xAxisConfig"
       [plotOptions]="plotOptions"
       [tooltip]="tooltipConfig"
@@ -37,7 +37,12 @@ export class TimelineChartComponent {
     () => this.data as unknown as ApexAxisChartSeries,
   );
 
-  readonly chartConfig: ApexChart = { type: 'rangeBar', height: this.height, background: 'transparent' };
+  readonly chartConfig = computed<ApexChart>(() => ({
+    type: 'rangeBar',
+    height: this.height,
+    background: 'transparent',
+    foreColor: this.theme.currentMode() === 'dark' ? '#A1A1AA' : '#374151',
+  }));
 
   readonly xAxisConfig: ApexXAxis = {
     type: 'datetime',

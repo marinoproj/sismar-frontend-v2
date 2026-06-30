@@ -36,7 +36,7 @@ export class ToastContainerComponent {
         toast.type === 'success',
       'bg-red-50 border-red-200 text-red-800 dark:bg-red-900/40 dark:border-red-700 dark:text-red-300':
         toast.type === 'error',
-      'bg-yellow-50 border-yellow-200 text-yellow-800 dark:bg-yellow-900/40 dark:border-yellow-700 dark:text-yellow-300':
+      'bg-yellow-50 border-yellow-200 text-yellow-800 dark:bg-orange-900/30 dark:border-orange-600 dark:text-orange-300':
         toast.type === 'warning',
       'bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/40 dark:border-blue-700 dark:text-blue-300':
         toast.type === 'info',
