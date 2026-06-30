@@ -16,7 +16,7 @@ export interface ListGroupItem {
   standalone: true,
   imports: [NgClass, BadgeComponent],
   template: `
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <ul class="divide-y divide-gray-200 dark:divide-gray-600 rounded-lg border border-gray-200 dark:border-gray-500 overflow-hidden">
       @for (item of items; track item.label) {
         <li
           class="flex items-center gap-3 px-4 py-3 transition-colors"
@@ -25,19 +25,19 @@ export interface ListGroupItem {
             : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50'"
         >
           @if (item.icon) {
-            <i [class]="item.icon + ' text-lg text-gray-500 dark:text-gray-400 shrink-0'"></i>
+            <i [class]="item.icon + ' text-lg text-gray-500 dark:text-gray-300 shrink-0'"></i>
           }
           <div class="flex-1 min-w-0">
             <p
               class="text-sm font-medium truncate"
               [ngClass]="item.active
                 ? 'text-[var(--color-primary)]'
-                : 'text-gray-800 dark:text-gray-200'"
+                : 'text-gray-800 dark:text-white'"
             >
               {{ item.label }}
             </p>
             @if (item.description) {
-              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">{{ item.description }}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-300 mt-0.5 truncate">{{ item.description }}</p>
             }
           </div>
           @if (item.badge) {
