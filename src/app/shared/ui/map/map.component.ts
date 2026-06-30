@@ -12,8 +12,9 @@ import { MapService } from './map.service';
 @Component({
   selector: 'app-map',
   standalone: true,
+  host: { class: 'block w-full' },
   template: `
-    <div #mapContainer [style.height]="height" class="w-full rounded-lg overflow-hidden z-0"></div>
+    <div #mapContainer [style.height]="height" class="w-full z-0"></div>
     <ng-content />
   `,
 })
@@ -40,6 +41,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }).addTo(this.map);
 
     this.mapService.setMap(this.map);
+
+    setTimeout(() => this.map.invalidateSize(), 0);
   }
 
   ngOnDestroy(): void {
