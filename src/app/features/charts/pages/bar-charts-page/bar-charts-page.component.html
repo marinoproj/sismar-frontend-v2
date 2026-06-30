@@ -1,0 +1,21 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Bar Charts</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Exemplos de gráficos de barra vertical e horizontal</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      <p class="text-xs text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider font-medium">Barras verticais agrupadas</p>
+      <app-bar-chart [data]="verticalBar" title="Vendas vs Metas por Mês" />
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      <p class="text-xs text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider font-medium">Barras horizontais</p>
+      <app-bar-chart [data]="horizontalBar" title="Vendas por Região" orientation="horizontal" />
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 lg:col-span-2">
+      <p class="text-xs text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider font-medium">Barras por trimestre</p>
+      <app-bar-chart [data]="stackedBar" title="Desempenho por Trimestre e Produto" />
+    </div>
+  </div>
+</div>

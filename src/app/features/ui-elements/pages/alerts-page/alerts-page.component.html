@@ -1,0 +1,22 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Alerts</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Componente de alerta com variações de tipo e comportamento</p>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 space-y-4">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tipos</h2>
+    <app-alert type="info" message="Informação: seu pedido está sendo processado." />
+    <app-alert type="success" message="Sucesso: usuário cadastrado com sucesso!" />
+    <app-alert type="warning" message="Atenção: o prazo de validade está próximo." />
+    <app-alert type="danger" message="Erro: não foi possível conectar ao servidor." />
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 space-y-4">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Descartáveis (clique no × para fechar)</h2>
+    <app-alert type="info" message="Este alerta pode ser fechado clicando no botão à direita." [dismissible]="true" />
+    <app-alert type="success" message="Operação realizada com sucesso! Clique para fechar." [dismissible]="true" />
+    <app-alert type="warning" message="Aviso descartável: verifique suas configurações." [dismissible]="true" />
+    <app-alert type="danger" message="Erro crítico! Clique para dispensar." [dismissible]="true" />
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dropdowns</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Menus dropdown com toggle, fechamento automático ao clicar fora e itens desabilitados</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+      <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">Simples</h2>
+      <app-dropdown label="Ações" [items]="simpleItems" />
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+      <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">Com ícones</h2>
+      <app-dropdown label="Opções" [items]="iconItems" />
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+      <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">Com itens desabilitados</h2>
+      <app-dropdown label="Gerenciar" [items]="disabledItems" />
+    </div>
+  </div>
+</div>

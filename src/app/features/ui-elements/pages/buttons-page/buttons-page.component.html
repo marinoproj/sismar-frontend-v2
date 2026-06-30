@@ -1,0 +1,37 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Buttons</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Botões com variantes, tamanhos e estados de loading e disabled</p>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 space-y-4">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Variantes</h2>
+    <div class="flex flex-wrap gap-3">
+      <app-button variant="primary">Primary</app-button>
+      <app-button variant="secondary">Secondary</app-button>
+      <app-button variant="outline">Outline</app-button>
+      <app-button variant="danger">Danger</app-button>
+      <app-button variant="ghost">Ghost</app-button>
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 space-y-4">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tamanhos</h2>
+    <div class="flex flex-wrap items-center gap-3">
+      <app-button size="sm">Small</app-button>
+      <app-button size="md">Medium</app-button>
+      <app-button size="lg">Large</app-button>
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 space-y-4">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Estados</h2>
+    <div class="flex flex-wrap gap-3">
+      <app-button [disabled]="true">Disabled</app-button>
+      <app-button [loading]="loadingState()" (clicked)="simulateLoading()">
+        {{ loadingState() ? 'Carregando...' : 'Clique para carregar' }}
+      </app-button>
+      <app-button variant="danger" [loading]="false">Danger + Loading</app-button>
+    </div>
+  </div>
+</div>

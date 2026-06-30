@@ -19,10 +19,10 @@ export interface ThemeConfig {
 export const THEME_CONFIG = new InjectionToken<ThemeConfig>('THEME_CONFIG');
 
 export const themeConfig: ThemeConfig = {
-  defaultMode: 'light',
-  primaryColor: '#6366f1',
-  menuColor: '#1e2235',
-  headerColor: '#ffffff',
+  defaultMode: 'dark',
+  primaryColor: '#6C63FF',
+  menuColor: '#18181B',
+  headerColor: '#202026',
   logoUrl: 'assets/images/logo.svg',
   appName: 'Sismar',
 };

@@ -1,0 +1,83 @@
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Vendas</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Métricas de desempenho comercial</p>
+  </div>
+
+  <!-- KPIs -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    @if (isLoading) {
+      @for (i of [1,2,3,4]; track i) {
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-5 h-24 animate-pulse border border-gray-100 dark:border-gray-700"></div>
+      }
+    } @else {
+      @for (kpi of summary!.kpis; track kpi.label) {
+        <app-kpi-card [label]="kpi.label" [value]="kpi.value" [change]="kpi.change" [icon]="kpi.icon" />
+      }
+    }
+  </div>
+
+  <!-- Gráficos linha + barra -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      @if (!isLoading) {
+        <app-line-chart [data]="summary!.lineChart" title="Vendas vs Meta (12 meses)" />
+      }
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      @if (!isLoading) {
+        <app-bar-chart [data]="summary!.barChart" title="Produtos vs Serviços por Mês" />
+      }
+    </div>
+  </div>
+
+  <!-- Gráficos área + pizza -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      @if (!isLoading) {
+        <app-area-chart [data]="summary!.areaChart" title="Receita vs Custo Acumulado" />
+      }
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      @if (!isLoading) {
+        <app-pie-chart
+          [labels]="summary!.pieLabels"
+          [series]="summary!.pieSeries"
+          title="Distribuição por Categoria"
+          [donut]="true"
+        />
+      }
+    </div>
+  </div>
+
+  <!-- Timeline + Mixed -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      @if (!isLoading) {
+        <app-timeline-chart [data]="summary!.timeline" title="Etapas do Processo" [height]="250" />
+      }
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      @if (!isLoading) {
+        <app-mixed-chart [data]="summary!.mixedChart" title="Volume (barra) + Tendência (linha)" />
+      }
+    </div>
+  </div>
+
+  <!-- Tabela -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+    <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-4">Pedidos Recentes</h2>
+    <app-table
+      [columns]="tableColumns"
+      [rows]="pagedRows"
+      [loading]="isLoading"
+      [totalItems]="summary?.tableTotalItems"
+      [pageSize]="pageSize"
+      [currentPage]="currentPage()"
+      (pageChange)="onPageChange($event)"
+    />
+  </div>
+
+</div>

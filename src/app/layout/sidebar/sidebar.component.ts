@@ -3,7 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { LayoutService } from '../../core/services/layout.service';
 import { THEME_CONFIG } from '../../core/config/theme.config';
-import { navItems, NavItem } from '../nav-items';
+import { navSections, NavItem } from '../nav-items';
 
 @Component({
   selector: 'app-sidebar',
@@ -14,12 +14,11 @@ import { navItems, NavItem } from '../nav-items';
 export class SidebarComponent {
   readonly layout = inject(LayoutService);
   readonly config = inject(THEME_CONFIG);
-  readonly navItems = navItems;
+  readonly navSections = navSections;
   expandedGroups = new Set<string>();
 
   get isCollapsed(): boolean {
-    const state = this.layout.sidebarState();
-    return state === 'collapsed';
+    return this.layout.sidebarState() === 'collapsed';
   }
 
   toggleGroup(label: string): void {

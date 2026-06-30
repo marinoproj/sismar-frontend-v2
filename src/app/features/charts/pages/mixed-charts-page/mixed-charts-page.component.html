@@ -1,0 +1,17 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Mixed Charts</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Gráficos combinando barras e linhas no mesmo eixo</p>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      <p class="text-xs text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider font-medium">Volume (barra) + Tendência (linha)</p>
+      <app-mixed-chart [data]="volumeTrend" title="Volume de Transações e Tendência" />
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      <p class="text-xs text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider font-medium">Receita + Custo (barras) e Lucro (linha)</p>
+      <app-mixed-chart [data]="revenueComparison" title="Análise Financeira Mensal" />
+    </div>
+  </div>
+</div>

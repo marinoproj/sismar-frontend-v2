@@ -1,6 +1,6 @@
 import { Component, computed, inject, Input } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { ApexAxisChartSeries, ApexChart, ApexXAxis, ApexDataLabels, ApexTheme, ApexTitleSubtitle, ApexFill } from 'ng-apexcharts';
+import { ApexAxisChartSeries, ApexChart, ApexXAxis, ApexDataLabels, ApexTheme, ApexTitleSubtitle, ApexFill, ApexGrid } from 'ng-apexcharts';
 import { ThemeService } from '../../../../core/services/theme.service';
 import { THEME_CONFIG } from '../../../../core/config/theme.config';
 import { ChartData } from '../../../models/chart-data.model';
@@ -16,6 +16,7 @@ import { ChartData } from '../../../models/chart-data.model';
       [xaxis]="xAxisConfig"
       [dataLabels]="dataLabels"
       [fill]="fillConfig"
+      [grid]="gridConfig()"
       [theme]="chartTheme()"
       [title]="titleConfig()"
       [colors]="resolvedColors()"
@@ -39,6 +40,7 @@ export class AreaChartComponent {
   readonly chartConfig = computed<ApexChart>(() => ({
     type: 'area',
     height: this.height,
+    background: 'transparent',
     stacked: this.stacked,
     toolbar: { show: false },
   }));
@@ -49,6 +51,11 @@ export class AreaChartComponent {
     type: 'gradient',
     gradient: { shadeIntensity: 1, opacityFrom: 0.5, opacityTo: 0.1 },
   };
+
+  readonly gridConfig = computed<ApexGrid>(() => ({
+    borderColor: this.theme.currentMode() === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+    xaxis: { lines: { show: false } },
+  }));
 
   readonly chartTheme = computed<ApexTheme>(() => ({
     mode: this.theme.currentMode() as 'light' | 'dark',
@@ -61,6 +68,6 @@ export class AreaChartComponent {
   }));
 
   readonly resolvedColors = computed<string[]>(() =>
-    this.colors ?? [this.config.primaryColor, '#f59e0b', '#10b981'],
+    this.colors ?? [this.config.primaryColor, '#EC5CF8', '#5B6CFF'],
   );
 }

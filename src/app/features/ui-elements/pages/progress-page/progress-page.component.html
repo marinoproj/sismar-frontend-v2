@@ -1,0 +1,35 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Progress</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Barras de progresso com variações de cor e rótulo</p>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 space-y-6">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sem rótulo</h2>
+    <div class="space-y-3">
+      <app-progress [value]="75" variant="primary" />
+      <app-progress [value]="60" variant="success" />
+      <app-progress [value]="45" variant="warning" />
+      <app-progress [value]="30" variant="danger" />
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 space-y-6">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Com rótulo e percentual</h2>
+    <div class="space-y-4">
+      <app-progress [value]="85" variant="primary" label="Armazenamento usado" />
+      <app-progress [value]="42" variant="success" label="Metas atingidas" />
+      <app-progress [value]="68" variant="warning" label="CPU em uso" />
+      <app-progress [value]="22" variant="danger" label="Bateria" />
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 space-y-6">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Diferentes máximos</h2>
+    <div class="space-y-4">
+      <app-progress [value]="7" [max]="10" label="Passos concluídos (7 de 10)" />
+      <app-progress [value]="350" [max]="500" variant="success" label="Pontos XP (350 de 500)" />
+      <app-progress [value]="2400" [max]="5000" variant="warning" label="Vendas do mês (R$ 2.400 de R$ 5.000)" />
+    </div>
+  </div>
+</div>

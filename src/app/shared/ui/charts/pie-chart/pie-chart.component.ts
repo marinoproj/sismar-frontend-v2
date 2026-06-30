@@ -40,6 +40,7 @@ export class PieChartComponent {
   readonly chartConfig = computed<ApexChart>(() => ({
     type: this.donut ? 'donut' : 'pie',
     height: this.height,
+    background: 'transparent',
   }));
 
   readonly legendConfig: ApexLegend = { position: 'bottom' };
@@ -55,6 +56,6 @@ export class PieChartComponent {
   }));
 
   readonly resolvedColors = computed<string[]>(() =>
-    this.colors ?? [this.config.primaryColor, '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'],
+    this.colors ?? [this.config.primaryColor, '#EC5CF8', '#5B6CFF', '#34D399', '#FF8A65'],
   );
 }

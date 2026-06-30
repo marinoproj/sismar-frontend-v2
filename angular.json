@@ -32,8 +32,10 @@
             ],
             "styles": [
               "node_modules/remixicon/fonts/remixicon.css",
+              "node_modules/leaflet/dist/leaflet.css",
               "src/styles.css"
             ],
+            "allowedCommonJsDependencies": ["leaflet"],
             "scripts": []
           },
           "configurations": {

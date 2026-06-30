@@ -1,0 +1,58 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Spinners</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Indicadores de carregamento com variações de tamanho e cor</p>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">Tamanhos</h2>
+    <div class="flex items-center gap-6">
+      <div class="flex flex-col items-center gap-2">
+        <app-spinner size="sm" />
+        <span class="text-xs text-gray-500 dark:text-gray-400">Small</span>
+      </div>
+      <div class="flex flex-col items-center gap-2">
+        <app-spinner size="md" />
+        <span class="text-xs text-gray-500 dark:text-gray-400">Medium</span>
+      </div>
+      <div class="flex flex-col items-center gap-2">
+        <app-spinner size="lg" />
+        <span class="text-xs text-gray-500 dark:text-gray-400">Large</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">Cores personalizadas</h2>
+    <div class="flex items-center gap-6">
+      <div class="flex flex-col items-center gap-2">
+        <app-spinner size="md" color="var(--color-primary)" />
+        <span class="text-xs text-gray-500 dark:text-gray-400">Primary</span>
+      </div>
+      <div class="flex flex-col items-center gap-2">
+        <app-spinner size="md" color="#10b981" />
+        <span class="text-xs text-gray-500 dark:text-gray-400">Success</span>
+      </div>
+      <div class="flex flex-col items-center gap-2">
+        <app-spinner size="md" color="#f59e0b" />
+        <span class="text-xs text-gray-500 dark:text-gray-400">Warning</span>
+      </div>
+      <div class="flex flex-col items-center gap-2">
+        <app-spinner size="md" color="#ef4444" />
+        <span class="text-xs text-gray-500 dark:text-gray-400">Danger</span>
+      </div>
+      <div class="flex flex-col items-center gap-2">
+        <app-spinner size="md" color="#8b5cf6" />
+        <span class="text-xs text-gray-500 dark:text-gray-400">Violet</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">Em contexto de uso</h2>
+    <div class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+      <app-spinner size="sm" color="var(--color-primary)" />
+      <span class="text-sm text-gray-600 dark:text-gray-300">Carregando dados do servidor...</span>
+    </div>
+  </div>
+</div>

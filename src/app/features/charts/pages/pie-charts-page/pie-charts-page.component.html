@@ -1,0 +1,37 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Pie Charts</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Gráficos de pizza e donut com diferentes datasets</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      <p class="text-xs text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider font-medium">Pizza clássica</p>
+      <app-pie-chart
+        [labels]="categoryLabels"
+        [series]="categorySeries"
+        title="Distribuição por Categoria"
+        [donut]="false"
+      />
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      <p class="text-xs text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider font-medium">Donut — composição de portfólio</p>
+      <app-pie-chart
+        [labels]="portfolioLabels"
+        [series]="portfolioSeries"
+        title="Composição da Carteira"
+        [donut]="true"
+      />
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 lg:col-span-2">
+      <p class="text-xs text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider font-medium">Donut — participação regional</p>
+      <app-pie-chart
+        [labels]="regionLabels"
+        [series]="regionSeries"
+        title="Participação por Região"
+        [donut]="true"
+        [height]="300"
+      />
+    </div>
+  </div>
+</div>

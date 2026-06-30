@@ -1,6 +1,6 @@
 import { Component, computed, inject, Input } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { ApexAxisChartSeries, ApexChart, ApexXAxis, ApexDataLabels, ApexTheme, ApexTitleSubtitle } from 'ng-apexcharts';
+import { ApexAxisChartSeries, ApexChart, ApexXAxis, ApexDataLabels, ApexTheme, ApexTitleSubtitle, ApexGrid } from 'ng-apexcharts';
 import { ThemeService } from '../../../../core/services/theme.service';
 import { THEME_CONFIG } from '../../../../core/config/theme.config';
 import { MixedChartData } from '../../../models/chart-data.model';
@@ -15,6 +15,7 @@ import { MixedChartData } from '../../../models/chart-data.model';
       [chart]="chartConfig"
       [xaxis]="xAxisConfig"
       [dataLabels]="dataLabels"
+      [grid]="gridConfig()"
       [theme]="chartTheme()"
       [title]="titleConfig()"
       [colors]="resolvedColors()"
@@ -36,9 +37,14 @@ export class MixedChartComponent {
     () => this.data as unknown as ApexAxisChartSeries,
   );
 
-  readonly chartConfig: ApexChart = { type: 'line', height: this.height, toolbar: { show: false } };
+  readonly chartConfig: ApexChart = { type: 'line', height: this.height, background: 'transparent', toolbar: { show: false } };
   readonly xAxisConfig: ApexXAxis = { type: 'category' };
   readonly dataLabels: ApexDataLabels = { enabled: false };
+
+  readonly gridConfig = computed<ApexGrid>(() => ({
+    borderColor: this.theme.currentMode() === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+    xaxis: { lines: { show: false } },
+  }));
 
   readonly chartTheme = computed<ApexTheme>(() => ({
     mode: this.theme.currentMode() as 'light' | 'dark',
@@ -51,6 +57,6 @@ export class MixedChartComponent {
   }));
 
   readonly resolvedColors = computed<string[]>(() =>
-    this.colors ?? [this.config.primaryColor, '#f59e0b', '#10b981'],
+    this.colors ?? [this.config.primaryColor, '#EC5CF8', '#5B6CFF'],
   );
 }

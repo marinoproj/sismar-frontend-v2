@@ -2,12 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Gray scale — Tailwind v3 defaults (light mode) ─────────────────────── */
 :root {
-  --color-primary: #6366f1;
-  --color-menu-bg: #1e2235;
-  --color-header-bg: #ffffff;
+  --color-primary:    #6C63FF;
+  --color-menu-bg:    #18181B;
+  --color-header-bg:  #ffffff;
+
+  --color-gray-50:  #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  --color-gray-950: #030712;
 }
 
+/* ─── Modern Dark UI — premium SaaS palette ───────────────────────────────
+  Hierarquia de superfícies (diferença ~5-10% de luminosidade entre níveis):
+    gray-950 → fundo mais profundo       (#0E0E11)
+    gray-900 → fundo da página           (#1D1D22)
+    gray-800 → cards / painéis           (#232328)
+    gray-700 → hover / superfície elevada (#2C2C32)
+    gray-600 → inputs                    (#2A2A30)
+    gray-200 → bordas ultra-sutis        (#2A2A2F ≈ rgba(255,255,255,.05))
+    gray-300 → texto principal           (#FFFFFF)
+    gray-400 → texto secundário          (#A1A1AA)
+    gray-500 → texto desabilitado        (#71717A)
+──────────────────────────────────────────────────────────────────────────── */
+.dark {
+  --color-menu-bg:    #18181B;
+  --color-header-bg:  #202026;
+
+  --color-gray-50:  #1D1D22;
+  --color-gray-100: #222227;
+  --color-gray-200: #2A2A2F;
+  --color-gray-300: #FFFFFF;
+  --color-gray-400: #A1A1AA;
+  --color-gray-500: #71717A;
+  --color-gray-600: #2A2A30;
+  --color-gray-700: #2C2C32;
+  --color-gray-800: #232328;
+  --color-gray-900: #1D1D22;
+  --color-gray-950: #0E0E11;
+}
+
+/* ─── Global ──────────────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -22,11 +65,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.dark {
+  color-scheme: dark;
+}
+
 @keyframes slideIn {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
 }

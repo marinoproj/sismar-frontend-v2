@@ -1,0 +1,36 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Toasts</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Notificações temporárias via ToastService — aparecem no canto superior direito e somem após 4 segundos</p>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">Disparar toasts</h2>
+    <div class="flex flex-wrap gap-3">
+      <app-button variant="primary" (clicked)="showSuccess()">
+        <i class="ri-checkbox-circle-line"></i> Toast de Sucesso
+      </app-button>
+      <app-button variant="danger" (clicked)="showError()">
+        <i class="ri-close-circle-line"></i> Toast de Erro
+      </app-button>
+      <app-button variant="secondary" (clicked)="showWarning()">
+        <i class="ri-alert-line"></i> Toast de Aviso
+      </app-button>
+      <app-button variant="outline" (clicked)="showInfo()">
+        <i class="ri-information-line"></i> Toast de Info
+      </app-button>
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Como usar</h2>
+    <div class="bg-gray-900 rounded-lg p-4 text-sm font-mono text-gray-100 overflow-x-auto">
+      <p class="text-yellow-400">// Injete o ToastService no seu componente</p>
+      <p class="text-blue-300">private readonly</p><p class="text-white"> toast = inject(ToastService);</p>
+      <p class="mt-2 text-yellow-400">// Dispare toasts de qualquer lugar</p>
+      <p class="text-white">this.toast.show(&#123; message: 'Usuário salvo!', type: 'success' &#125;);</p>
+      <p class="text-white">this.toast.show(&#123; message: 'Erro ao salvar.', type: 'error' &#125;);</p>
+      <p class="text-white">this.toast.show(&#123; message: 'Aviso importante.', type: 'warning', duration: 6000 &#125;);</p>
+    </div>
+  </div>
+</div>

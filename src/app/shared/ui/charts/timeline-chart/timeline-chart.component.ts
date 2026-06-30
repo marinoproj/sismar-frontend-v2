@@ -1,6 +1,6 @@
 import { Component, computed, inject, Input } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { ApexAxisChartSeries, ApexChart, ApexXAxis, ApexTheme, ApexTitleSubtitle, ApexPlotOptions, ApexTooltip } from 'ng-apexcharts';
+import { ApexAxisChartSeries, ApexChart, ApexXAxis, ApexTheme, ApexTitleSubtitle, ApexPlotOptions, ApexTooltip, ApexGrid } from 'ng-apexcharts';
 import { ThemeService } from '../../../../core/services/theme.service';
 import { THEME_CONFIG } from '../../../../core/config/theme.config';
 import { TimelineData } from '../../../models/chart-data.model';
@@ -16,6 +16,7 @@ import { TimelineData } from '../../../models/chart-data.model';
       [xaxis]="xAxisConfig"
       [plotOptions]="plotOptions"
       [tooltip]="tooltipConfig"
+      [grid]="gridConfig()"
       [theme]="chartTheme()"
       [title]="titleConfig()"
       [colors]="resolvedColors()"
@@ -36,7 +37,7 @@ export class TimelineChartComponent {
     () => this.data as unknown as ApexAxisChartSeries,
   );
 
-  readonly chartConfig: ApexChart = { type: 'rangeBar', height: this.height };
+  readonly chartConfig: ApexChart = { type: 'rangeBar', height: this.height, background: 'transparent' };
 
   readonly xAxisConfig: ApexXAxis = {
     type: 'datetime',
@@ -49,6 +50,11 @@ export class TimelineChartComponent {
     x: { format: 'dd/MM/yyyy HH:mm' },
   };
 
+  readonly gridConfig = computed<ApexGrid>(() => ({
+    borderColor: this.theme.currentMode() === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+    xaxis: { lines: { show: false } },
+  }));
+
   readonly chartTheme = computed<ApexTheme>(() => ({
     mode: this.theme.currentMode() as 'light' | 'dark',
   }));
@@ -60,6 +66,6 @@ export class TimelineChartComponent {
   }));
 
   readonly resolvedColors = computed<string[]>(() =>
-    this.colors ?? [this.config.primaryColor, '#f59e0b', '#10b981', '#ef4444'],
+    this.colors ?? [this.config.primaryColor, '#5B6CFF', '#34D399', '#FF8A65'],
   );
 }

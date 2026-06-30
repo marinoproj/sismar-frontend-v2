@@ -1,0 +1,58 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Maps</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Mapa interativo com markers, círculos e polígonos — clique nos elementos para ver detalhes</p>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+    <app-map [center]="[-14, -50]" [zoom]="5" height="560px">
+      @for (marker of markers; track marker.title) {
+        <app-map-marker
+          [lat]="marker.lat"
+          [lng]="marker.lng"
+          [title]="marker.title"
+          [popupContent]="marker.popup"
+        />
+      }
+
+      @for (circle of circles; track circle.tooltip) {
+        <app-map-circle
+          [center]="circle.center"
+          [radius]="circle.radius"
+          [color]="circle.color"
+          [tooltipContent]="circle.tooltip"
+        />
+      }
+
+      <app-map-polygon
+        [points]="polygon"
+        color="#f59e0b"
+        tooltipContent="<b>Região Centro-Oeste</b><br>Área de expansão fictícia — triângulo estratégico"
+      />
+    </app-map>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 flex items-center gap-3">
+      <div class="w-3 h-3 rounded-full bg-blue-600 shrink-0"></div>
+      <div>
+        <p class="text-sm font-medium text-gray-900 dark:text-white">5 Markers</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Capitais e filiais fictícias</p>
+      </div>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 flex items-center gap-3">
+      <div class="w-3 h-3 rounded-full border-2 border-[var(--color-primary)] shrink-0"></div>
+      <div>
+        <p class="text-sm font-medium text-gray-900 dark:text-white">2 Círculos</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Áreas de cobertura</p>
+      </div>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 flex items-center gap-3">
+      <div class="w-3 h-3 bg-yellow-400 shrink-0" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%)"></div>
+      <div>
+        <p class="text-sm font-medium text-gray-900 dark:text-white">1 Polígono</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Região fictícia delimitada</p>
+      </div>
+    </div>
+  </div>
+</div>
