@@ -30,5 +30,5 @@ export const themeConfig: ThemeConfig = {
   darkMenuColor:   '#18181B', // sidebar no modo escuro
   darkHeaderColor: '#202026', // header no modo escuro
   logoUrl: 'assets/images/logo.svg',
-  appName: 'Sismar',
+  appName: 'Admin',
 };
