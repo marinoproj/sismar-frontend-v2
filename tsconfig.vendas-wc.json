@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/vendas-wc",
+    "types": []
+  },
+  "files": [
+    "src/main-vendas-wc.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
+}

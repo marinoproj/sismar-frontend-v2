@@ -7,7 +7,31 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "sismar-web-v2": {
+    "vendas-wc": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/vendas-wc",
+            "index": false,
+            "browser": "src/main-vendas-wc.ts",
+            "polyfills": [],
+            "tsConfig": "tsconfig.vendas-wc.json",
+            "outputHashing": "none",
+            "styles": [
+              "node_modules/remixicon/fonts/remixicon.css",
+              "src/styles.css"
+            ],
+            "allowedCommonJsDependencies": ["apexcharts", "leaflet"]
+          }
+        }
+      }
+    },
+    "frontend-admin-template": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -17,7 +41,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/sismar-web-v2",
+            "outputPath": "dist/frontend-admin-template",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -66,10 +90,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "sismar-web-v2:build:production"
+              "buildTarget": "frontend-admin-template:build:production"
             },
             "development": {
-              "buildTarget": "sismar-web-v2:build:development"
+              "buildTarget": "frontend-admin-template:build:development"
             }
           },
           "defaultConfiguration": "development"
