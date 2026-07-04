@@ -6,7 +6,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const token = authService.token();
 
-  if (!token || req.url.includes('/auth/login')) {
+  const isPublicAuthRequest = req.url.includes('/auth/login') || req.url.includes('/auth/clients');
+  if (!token || isPublicAuthRequest) {
     return next(req);
   }
 

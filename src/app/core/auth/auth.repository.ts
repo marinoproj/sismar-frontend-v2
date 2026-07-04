@@ -1,19 +1,16 @@
 import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User } from './user.model';
+import { AuthSession, ClientDTO } from './session.model';
 
 export interface LoginCredentials {
-  email: string;
+  username: string;
   password: string;
 }
 
-export interface LoginResponse {
-  token: string;
-  user: User;
-}
-
 export abstract class AuthRepository {
-  abstract login(credentials: LoginCredentials): Observable<LoginResponse>;
+  abstract getClients(credentials: LoginCredentials): Observable<ClientDTO[]>;
+  abstract login(credentials: LoginCredentials, clientCode: string): Observable<AuthSession>;
+  abstract logout(): Observable<void>;
 }
 
 export const AUTH_REPOSITORY = new InjectionToken<AuthRepository>('AUTH_REPOSITORY');

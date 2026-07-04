@@ -56,7 +56,7 @@
         <div
           class="w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center text-sm font-semibold"
         >
-          {{ auth.currentUser()?.name?.[0]?.toUpperCase() ?? 'U' }}
+          {{ auth.session()?.name?.[0]?.toUpperCase() ?? 'U' }}
         </div>
         <i class="ri-arrow-down-s-line text-gray-500 dark:text-gray-400 hidden md:block"></i>
       </button>

@@ -1,9 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { LayoutService } from '../../core/services/layout.service';
 import { THEME_CONFIG } from '../../core/config/theme.config';
-import { navSections, NavItem } from '../nav-items';
+import { AuthService } from '../../core/auth/auth.service';
+import { environment } from '../../../environments/environment';
+import { getNavSections, NavItem } from '../nav-items';
 
 @Component({
   selector: 'app-sidebar',
@@ -37,7 +39,13 @@ import { navSections, NavItem } from '../nav-items';
 export class SidebarComponent {
   readonly layout = inject(LayoutService);
   readonly config = inject(THEME_CONFIG);
-  readonly navSections = navSections;
+  private readonly auth = inject(AuthService);
+  readonly navSections = computed(() =>
+    getNavSections({
+      production: environment.production,
+      hasFeature: (feature) => this.auth.hasFeature(feature),
+    }),
+  );
   expandedGroups = new Set<string>();
 
   get isCollapsed(): boolean {

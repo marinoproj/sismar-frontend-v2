@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { LayoutComponent } from './layout/layout.component';
+import { demoRoutes } from './demo-routes';
 
 export const routes: Routes = [
   {
@@ -9,35 +10,25 @@ export const routes: Routes = [
       import('./features/auth/pages/login/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: '403',
+    loadComponent: () =>
+      import('./features/errors/pages/forbidden/forbidden.component').then(
+        (m) => m.ForbiddenComponent,
+      ),
+  },
+  {
     path: '',
     component: LayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
       {
-        path: 'dashboard',
-        data: { breadcrumb: 'Dashboard' },
-        loadChildren: () =>
-          import('./features/dashboard/routes').then((m) => m.dashboardRoutes),
+        path: 'home',
+        data: { breadcrumb: 'Início' },
+        loadComponent: () =>
+          import('./features/home/pages/home/home.component').then((m) => m.HomeComponent),
       },
-      {
-        path: 'charts',
-        data: { breadcrumb: 'Charts' },
-        loadChildren: () =>
-          import('./features/charts/routes').then((m) => m.chartsRoutes),
-      },
-      {
-        path: 'ui-elements',
-        data: { breadcrumb: 'UI Elements' },
-        loadChildren: () =>
-          import('./features/ui-elements/routes').then((m) => m.uiElementsRoutes),
-      },
-      {
-        path: 'maps',
-        data: { breadcrumb: 'Maps' },
-        loadChildren: () =>
-          import('./features/maps/routes').then((m) => m.mapsRoutes),
-      },
+      ...demoRoutes,
     ],
   },
   {

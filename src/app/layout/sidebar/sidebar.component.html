@@ -16,7 +16,7 @@
 
   <!-- Nav -->
   <nav class="flex-1 overflow-y-auto py-3 px-2">
-    @for (section of navSections; track section.group; let first = $first) {
+    @for (section of navSections(); track section.group; let first = $first) {
       <!-- Section header -->
       @if (!isCollapsed) {
         <p

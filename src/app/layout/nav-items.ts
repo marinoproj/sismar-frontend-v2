@@ -2,6 +2,8 @@ export interface NavItem {
   label: string;
   icon: string;
   route?: string;
+  feature?: string;
+  demo?: boolean;
   children?: NavItem[];
 }
 
@@ -10,13 +12,14 @@ export interface NavSection {
   items: NavItem[];
 }
 
-export const navSections: NavSection[] = [
+const allNavSections: NavSection[] = [
   {
     group: 'MAIN',
     items: [
       {
         label: 'Dashboard',
         icon: 'ri-dashboard-line',
+        demo: true,
         children: [
           { label: 'Vendas', icon: 'ri-line-chart-line', route: '/dashboard/vendas' },
           { label: 'Ações', icon: 'ri-stock-line', route: '/dashboard/acoes' },
@@ -25,6 +28,7 @@ export const navSections: NavSection[] = [
       {
         label: 'Charts',
         icon: 'ri-bar-chart-grouped-line',
+        demo: true,
         children: [
           { label: 'Line Charts', icon: 'ri-line-chart-line', route: '/charts/line' },
           { label: 'Bar Charts', icon: 'ri-bar-chart-line', route: '/charts/bar' },
@@ -36,6 +40,7 @@ export const navSections: NavSection[] = [
       {
         label: 'UI Elements',
         icon: 'ri-layout-grid-line',
+        demo: true,
         children: [
           { label: 'Alerts', icon: 'ri-alert-line', route: '/ui-elements/alerts' },
           { label: 'Badges', icon: 'ri-price-tag-3-line', route: '/ui-elements/badges' },
@@ -53,6 +58,7 @@ export const navSections: NavSection[] = [
       {
         label: 'Maps',
         icon: 'ri-map-pin-line',
+        demo: true,
         route: '/maps',
       },
     ],
@@ -68,3 +74,23 @@ export const navSections: NavSection[] = [
     ],
   },
 ];
+
+export interface NavVisibilityOptions {
+  production: boolean;
+  hasFeature: (feature: string) => boolean;
+}
+
+export function getNavSections(options: NavVisibilityOptions): NavSection[] {
+  return allNavSections
+    .map((section) => ({
+      group: section.group,
+      items: section.items.filter((item) => isNavItemVisible(item, options)),
+    }))
+    .filter((section) => section.items.length > 0);
+}
+
+function isNavItemVisible(item: NavItem, options: NavVisibilityOptions): boolean {
+  if (item.demo && options.production) return false;
+  if (item.feature && !options.hasFeature(item.feature)) return false;
+  return true;
+}
