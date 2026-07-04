@@ -137,6 +137,7 @@ Referências reais no projeto:
 - `src/app/features/dashboard/repositories/dashboard.repository.ts`
 - `src/app/features/dashboard/repositories/acoes.repository.ts`
 - `src/app/core/auth/auth.repository.ts`
+- `src/app/features/ports/repositories/ports.repository.ts` (só implementação HTTP real, sem mock — página de produto, não de exemplo)
 
 ---
 
@@ -190,6 +191,14 @@ Fluxo: `ThemeService.toggleMode()` → altera signal `currentMode` → adiciona/
 /             → LayoutComponent               (guard: authGuard)
   /           → redireciona para /home
   /home       → HomeComponent                 (placeholder "em construção", sem feature)
+  /ports      → portsRoutes (lazy, feature: PORTOS)
+    /                → PortsListPageComponent  (feature PORTOS; providers: PortsService, PORTS_REPOSITORY=HTTP real)
+    /:id             → PortDetailsPageComponent (shell com TabsComponent + router-outlet; providers: PortsService, PORTS_REPOSITORY=HTTP real)
+      /              → redireciona para geral
+      /geral         → GeneralTabComponent      (feature PORTOS)
+      /historico     → TabPlaceholderComponent  (feature PORTOS_HISTORICO, "em desenvolvimento")
+      /terminais     → TabPlaceholderComponent  (feature PORTOS_TERMINAIS, "em desenvolvimento")
+      /alertas       → TabPlaceholderComponent  (feature PORTOS_ALERTAS, "em desenvolvimento")
   /dashboard  → dashboardRoutes (lazy — só em desenvolvimento, ver nota abaixo)
     /         → redireciona para /dashboard/vendas
     /vendas   → VendasPageComponent           (providers: DashboardService, DASHBOARD_REPOSITORY=mock)
@@ -223,6 +232,12 @@ Fluxo: `ThemeService.toggleMode()` → altera signal `currentMode` → adiciona/
 `/dashboard`, `/charts`, `/ui-elements/*` e `/maps` são páginas de demonstração dos componentes do sistema (dados mockados, sem valor de produto real). Elas ficam registradas em `src/app/demo-routes.ts`, importado por `app.routes.ts`. Na configuration `production` do `angular.json`, um `fileReplacements` troca esse arquivo por `src/app/demo-routes.prod.ts` (que exporta `demoRoutes: []`) — isso remove tanto o registro das rotas quanto os chunks lazy correspondentes do bundle de produção (confirmado via `ng build --configuration=production`: só sobram os chunks de `login`, `403`, `404` e `home`). Em desenvolvimento essas páginas continuam acessíveis normalmente.
 
 O menu lateral (`src/app/layout/nav-items.ts`) segue a mesma regra em runtime: `getNavSections({ production, hasFeature })` filtra os itens marcados com `demo: true` quando `environment.production` é `true`, e também filtra itens com `feature` definido cuja feature o usuário não possui — usado por `SidebarComponent` via `computed()`.
+
+`/ports` é a primeira página real do produto (não é demo): fica registrada diretamente em `app.routes.ts` (fora de `demo-routes.ts`), permanece no build de produção, e usa `PortsHttpRepository` como única implementação de `PortsRepository` (sem mock), no mesmo espírito do módulo de auth.
+
+### Abas com rota própria + feature (primeiro uso real do featureGuard)
+
+`/ports/:id` é o primeiro caso no projeto de uma página com abas, cada uma com sua própria feature: `PortDetailsPageComponent` é o shell da rota (`TabsComponent` + `<router-outlet>`), e cada aba (`geral`, `historico`, `terminais`, `alertas`) é uma rota filha com `data: { feature: '<FEATURE>' }` + `canActivate: [featureGuard]`. O `TabsComponent` (catálogo, seção 6) calcula independentemente, via `AuthService.hasFeature`, quais abas ficam bloqueadas na UI — os dois mecanismos (guard na rota, bloqueio visual na aba) leem a mesma feature mas são checados em pontos diferentes, então **ao adicionar uma aba nova, declare a feature nos dois lugares** (no `data` da rota filha e no array `tabs` passado ao `TabsComponent`).
 
 ### Providers por rota
 
@@ -258,7 +273,7 @@ O login retorna `features: string[]` (nomes definidos pelo backend, ex. `PORT_VI
 - **Página inteira**: declare `data: { feature: 'NOME_DA_FEATURE' }` na rota e adicione `featureGuard` a `canActivate`.
 - **Trecho de UI** (botão, aba, seção): `*appHasFeature="'NOME_DA_FEATURE'"` (diretiva estrutural em `src/app/shared/directives/has-feature.directive.ts`), remove o elemento do DOM quando a feature não está presente.
 
-Nenhuma rota existente hoje declara `feature` — todas as páginas atuais são de exemplo. **Convenção**: ao criar uma página nova, ou um componente/ação nova dentro de uma página já permissionada, pergunte ao humano qual `feature` deve proteger aquele recurso antes de aplicá-la — não existe um catálogo automático/inferido.
+`/ports` e suas abas (`PORTOS`, `PORTOS_HISTORICO`, `PORTOS_TERMINAIS`, `PORTOS_ALERTAS`) são as primeiras rotas reais a declarar `feature` — as demais páginas (dashboard/charts/ui-elements/maps) continuam sendo exemplo, sem feature. **Convenção**: ao criar uma página nova, ou um componente/ação nova dentro de uma página já permissionada, pergunte ao humano qual `feature` deve proteger aquele recurso antes de aplicá-la — não existe um catálogo automático/inferido.
 
 ---
 
@@ -272,6 +287,7 @@ Todos os componentes estão em `src/app/shared/ui/` e são standalone — import
 |-----------|----------|------------------|-----|
 | Table | `app-table` | `columns*`, `rows*`, `actions`, `loading`, `totalItems`, `pageSize`, `currentPage`, `striped` (default `true`), `searchable`, `searchPlaceholder` | Tabela genérica com colunas dinâmicas (incl. `ColumnDef.template` para células customizadas como badge/progress), ações por linha, paginação, striping opcional e busca embutida (`(searchChange)`) |
 | KPI Card | `app-kpi-card` | `label*`, `value*`, `change*`, `icon*` | Card de métrica com variação percentual e ícone |
+| Stat Card | `app-stat-card` | `label*`, `value*`, `icon*` | Número simples com ícone, **sem** indicador de tendência — use quando não há histórico de comparação (diferente de `KpiCardComponent`/`TickerCardComponent`, que exigem `change`) |
 | Ticker Card | `app-ticker-card` | `symbol*`, `name*`, `currentValue*`, `change*`, `trend*`, `currency` | Card de ativo financeiro com tendência de alta/baixa |
 
 ### Gráficos (ApexCharts via ng-apexcharts)
@@ -313,6 +329,7 @@ Todos os componentes estão em `src/app/shared/ui/` e são standalone — import
 | Button | `app-button` | `variant` (primary/secondary/outline/danger/ghost), `size` (sm/md/lg), `loading`, `disabled`, `type` | Botão de ação |
 | Dropdown | `app-dropdown` | `items*`, `label` | Menu suspenso com lista de ações |
 | Breadcrumb | `app-breadcrumb` | — | Navegação hierárquica automática (lê `route.data.breadcrumb`) |
+| Tabs | `app-tabs` | `tabs*: { label, route, feature? }[]` | Navegação em abas via `routerLink` (rotas relativas). Cada aba com `feature` é checada contra `AuthService.hasFeature` e aparece bloqueada (visível, sem navegação) se ausente; abas sem `feature` nunca bloqueiam. Não esconde abas — só bloqueia |
 
 ### Modais (`@angular/cdk/dialog`)
 

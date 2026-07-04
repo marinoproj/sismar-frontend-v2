@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { featureGuard } from './core/guards/feature.guard';
 import { LayoutComponent } from './layout/layout.component';
 import { demoRoutes } from './demo-routes';
 
@@ -27,6 +28,12 @@ export const routes: Routes = [
         data: { breadcrumb: 'Início' },
         loadComponent: () =>
           import('./features/home/pages/home/home.component').then((m) => m.HomeComponent),
+      },
+      {
+        path: 'ports',
+        data: { breadcrumb: 'Portos', feature: 'PORTOS' },
+        canActivate: [featureGuard],
+        loadChildren: () => import('./features/ports/routes').then((m) => m.portsRoutes),
       },
       ...demoRoutes,
     ],

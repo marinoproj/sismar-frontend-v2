@@ -1,0 +1,137 @@
+@if (isLoading) {
+  <div class="space-y-5">
+    <div class="h-40 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 animate-pulse"></div>
+    <div class="h-64 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 animate-pulse"></div>
+  </div>
+} @else {
+  <div class="space-y-5">
+
+    <!-- Informações do Porto -->
+    <div>
+      <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-3">Informações do Porto</h2>
+      <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700">
+        <div class="flex flex-wrap items-center gap-8">
+
+          <!-- Identificação do porto -->
+          <div class="flex items-center gap-4">
+            <img
+              [src]="details!.portInfo.imagePort"
+              [alt]="details!.portInfo.name"
+              class="w-32 h-20 rounded-lg object-cover shrink-0 bg-gray-100 dark:bg-gray-700"
+              onerror="this.style.visibility='hidden'"
+            />
+            <div>
+              <p class="text-lg font-bold text-gray-900 dark:text-white">{{ details!.portInfo.name }}</p>
+              <div class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <img
+                  [src]="details!.portInfo.countryFlag"
+                  [alt]="details!.portInfo.country"
+                  class="w-5 h-4 rounded-sm object-cover"
+                  onerror="this.style.visibility='hidden'"
+                />
+                <span>{{ details!.portInfo.country }}</span>
+              </div>
+            </div>
+          </div>
+
+          <app-stat-card label="Total de berços" [value]="details!.portInfo.totalBerths" icon="ri-grid-line" />
+          <app-stat-card label="Ocupados" [value]="details!.portInfo.occupiedBerths" icon="ri-checkbox-circle-line" />
+
+          <app-pie-chart
+            [labels]="occupancyLabels"
+            [series]="occupancySeries()"
+            title="Taxa de ocupação"
+            [donut]="true"
+            [height]="180"
+            [colors]="occupancyColors"
+            legendPosition="right"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Indicadores Operacionais -->
+    <div>
+      <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-3">Indicadores Operacionais</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+        <!-- Navios agora -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700">
+          <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4">Navios agora</h3>
+          <div class="flex items-center gap-6 flex-wrap">
+            <app-stat-card
+              label="Total no porto"
+              [value]="details!.operationalIndicators.shipsInPort"
+              icon="ri-ship-2-line"
+            />
+            @if (shipsInPortLabels().length > 0) {
+              <div class="flex-1 min-w-[180px]">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Distribuição por tipo</p>
+                <app-pie-chart
+                  [labels]="shipsInPortLabels()"
+                  [series]="shipsInPortSeries()"
+                  title=""
+                  [donut]="true"
+                  [height]="180"
+                  legendPosition="right"
+                />
+              </div>
+            } @else {
+              <div class="flex-1 min-w-[180px] flex flex-col items-center justify-center text-center py-6 text-gray-400 dark:text-gray-500">
+                <i class="ri-inbox-line text-3xl mb-1"></i>
+                <p class="text-sm">Nenhuma informação encontrada</p>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Últimas 24 horas -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700">
+          <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4">Últimas 24 horas</h3>
+          <div class="flex items-center gap-6 flex-wrap">
+            <app-stat-card
+              label="Total de navios"
+              [value]="details!.operationalIndicators.shipsLast24h"
+              icon="ri-history-line"
+            />
+            @if (shipsLast24hLabels().length > 0) {
+              <div class="flex-1 min-w-[180px]">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Distribuição por tipo</p>
+                <app-pie-chart
+                  [labels]="shipsLast24hLabels()"
+                  [series]="shipsLast24hSeries()"
+                  title=""
+                  [donut]="true"
+                  [height]="180"
+                  legendPosition="right"
+                />
+              </div>
+            } @else {
+              <div class="flex-1 min-w-[180px] flex flex-col items-center justify-center text-center py-6 text-gray-400 dark:text-gray-500">
+                <i class="ri-inbox-line text-3xl mb-1"></i>
+                <p class="text-sm">Nenhuma informação encontrada</p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Fundeio / Canal de acesso / Atracados -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700 flex flex-col gap-4">
+          <app-stat-card label="Fundeio" [value]="details!.operationalIndicators.shipsInAnchorage" icon="ri-anchor-line" />
+          <app-button variant="outline" size="sm" [disabled]="true" title="Em breve">Ver detalhes</app-button>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700 flex flex-col gap-4">
+          <app-stat-card label="Canal de acesso" [value]="details!.operationalIndicators.shipsInAccessChannel" icon="ri-route-line" />
+          <app-button variant="outline" size="sm" [disabled]="true" title="Em breve">Ver detalhes</app-button>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700 flex flex-col gap-4">
+          <app-stat-card label="Atracados" [value]="details!.operationalIndicators.shipsDocked" icon="ri-ship-line" />
+          <app-button variant="outline" size="sm" [disabled]="true" title="Em breve">Ver detalhes</app-button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+}

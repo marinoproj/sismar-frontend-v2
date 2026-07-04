@@ -17,6 +17,12 @@ const allNavSections: NavSection[] = [
     group: 'MAIN',
     items: [
       {
+        label: 'Portos',
+        icon: 'ri-anchor-line',
+        route: '/ports',
+        feature: 'PORTOS',
+      },
+      {
         label: 'Dashboard',
         icon: 'ri-dashboard-line',
         demo: true,

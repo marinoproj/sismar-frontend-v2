@@ -1,0 +1,64 @@
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Portos</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Todos os portos cadastrados e a situação atual de cada um</p>
+  </div>
+
+  <!-- Tabela -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+    <app-table
+      [columns]="columns"
+      [rows]="filteredPorts"
+      [actions]="actions"
+      [loading]="isLoading"
+      [searchable]="true"
+      searchPlaceholder="Pesquisar por nome do porto..."
+      emptyMessage="Nenhum porto encontrado."
+      (searchChange)="onSearchChange($event)"
+    />
+  </div>
+
+</div>
+
+<!-- Porto: imagem + nome -->
+<ng-template #portTpl let-row>
+  <div class="flex items-center gap-3">
+    <img
+      [src]="row['imagePort']"
+      [alt]="row['name']"
+      class="w-14 h-10 rounded-lg object-cover shrink-0 bg-gray-100 dark:bg-gray-700"
+      onerror="this.style.visibility='hidden'"
+    />
+    <span class="font-medium text-gray-900 dark:text-white">{{ row['name'] }}</span>
+  </div>
+</ng-template>
+
+<!-- País: bandeira + nome -->
+<ng-template #countryTpl let-row>
+  <div class="flex items-center gap-2">
+    <img [src]="row['countryFlag']" [alt]="row['country']" class="w-5 h-4 rounded-sm object-cover shrink-0" onerror="this.style.visibility='hidden'" />
+    <span>{{ row['country'] }}</span>
+  </div>
+</ng-template>
+
+<!-- Navios no porto -->
+<ng-template #shipsTpl let-row>
+  <div class="flex items-center justify-center gap-1.5 text-gray-700 dark:text-gray-300">
+    <i class="ri-ship-2-line text-[var(--color-primary)]"></i>
+    <span class="font-semibold">{{ row['shipsInPort'] }}</span>
+  </div>
+</ng-template>
+
+<!-- Última atualização -->
+<ng-template #updatedTpl let-row>
+  @if (row['lastEquipmentUpdate']) {
+    <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
+      <i class="ri-time-line"></i>
+      <span>{{ row['lastEquipmentUpdate'] | date: 'dd/MM/yyyy HH:mm' }}</span>
+    </div>
+  } @else {
+    <span class="text-gray-400 dark:text-gray-500">—</span>
+  }
+</ng-template>

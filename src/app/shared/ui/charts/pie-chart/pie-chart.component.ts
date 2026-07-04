@@ -16,7 +16,7 @@ import { THEME_CONFIG } from '../../../../core/config/theme.config';
       [stroke]="strokeConfig()"
       [theme]="chartTheme()"
       [title]="titleConfig()"
-      [legend]="legendConfig"
+      [legend]="legendConfig()"
       [colors]="resolvedColors()"
     />
   `,
@@ -30,6 +30,7 @@ export class PieChartComponent {
   @Input() height = 350;
   @Input() colors?: string[];
   @Input() showLegend = true;
+  @Input() legendPosition: 'top' | 'right' | 'bottom' | 'left' = 'bottom';
 
   private readonly theme = inject(ThemeService);
   private readonly config = inject(THEME_CONFIG);
@@ -45,7 +46,10 @@ export class PieChartComponent {
     foreColor: this.theme.currentMode() === 'dark' ? '#A1A1AA' : '#374151',
   }));
 
-  readonly legendConfig: ApexLegend = { position: 'bottom' };
+  readonly legendConfig = computed<ApexLegend>(() => ({
+    show: this.showLegend,
+    position: this.legendPosition,
+  }));
 
   readonly strokeConfig = computed<ApexStroke>(() => ({
     width: 2,
