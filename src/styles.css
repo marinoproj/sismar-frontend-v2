@@ -79,3 +79,13 @@ body {
   from { transform: translateX(-100%); }
   to   { transform: translateX(0); }
 }
+
+/* CDK Dialog: garante centralização mesmo se o GlobalPositionStrategy não aplicar os estilos inline a tempo */
+.cdk-global-overlay-wrapper {
+  justify-content: center;
+  align-items: center;
+}
+
+.cdk-overlay-dark-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}

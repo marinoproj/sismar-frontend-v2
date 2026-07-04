@@ -43,6 +43,12 @@ export const uiElementsRoutes: Routes = [
       ),
   },
   {
+    path: 'modals',
+    data: { breadcrumb: 'Modals' },
+    loadComponent: () =>
+      import('./pages/modals-page/modals-page.component').then((m) => m.ModalsPageComponent),
+  },
+  {
     path: 'progress',
     data: { breadcrumb: 'Progress' },
     loadComponent: () =>
@@ -57,6 +63,12 @@ export const uiElementsRoutes: Routes = [
       import('./pages/spinners-page/spinners-page.component').then(
         (m) => m.SpinnersPageComponent,
       ),
+  },
+  {
+    path: 'tables',
+    data: { breadcrumb: 'Tables' },
+    loadComponent: () =>
+      import('./pages/tables-page/tables-page.component').then((m) => m.TablesPageComponent),
   },
   {
     path: 'toasts',

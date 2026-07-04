@@ -17,8 +17,12 @@ export class TableComponent {
   @Input() totalItems?: number;
   @Input() pageSize = 10;
   @Input() currentPage = 1;
+  @Input() striped = true;
+  @Input() searchable = false;
+  @Input() searchPlaceholder = 'Buscar...';
 
   @Output() pageChange = new EventEmitter<number>();
+  @Output() searchChange = new EventEmitter<string>();
 
   get hasActions(): boolean {
     return this.actions.length > 0;
@@ -90,5 +94,16 @@ export class TableComponent {
       default: 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600',
     };
     return `${base} ${variants[action.variant ?? 'default']}`;
+  }
+
+  get rowClasses(): string {
+    const base = 'transition-colors hover:bg-gray-100 dark:hover:bg-gray-700';
+    return this.striped
+      ? `${base} odd:bg-white even:bg-gray-50 dark:bg-gray-800`
+      : `${base} bg-white dark:bg-gray-800`;
+  }
+
+  onSearchInput(value: string): void {
+    this.searchChange.emit(value);
   }
 }

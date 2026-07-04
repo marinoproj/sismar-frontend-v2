@@ -1,0 +1,70 @@
+<ng-template #statusTpl let-row>
+  <app-badge [label]="row.status" [variant]="statusVariant(row.status)" />
+</ng-template>
+
+<ng-template #progressoTpl let-row>
+  <app-progress [value]="row.progresso" [variant]="progressoVariant(row.progresso)" />
+</ng-template>
+
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Tables</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Variações do componente de tabela: paginação, busca, colunas customizadas e striping</p>
+  </div>
+
+  <!-- 1. Básica, sem paginação, sem striping -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+    <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Básica</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Sem paginação, sem striping (fundo uniforme)</p>
+    <app-table [columns]="columnsSimples" [rows]="pedidosBasicos" [striped]="false" />
+  </div>
+
+  <!-- 2. Com paginação -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+    <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Com paginação</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ pedidosCompletos.length }} pedidos, {{ pageSize }} por página</p>
+    <app-table
+      [columns]="columnsSimples"
+      [rows]="pagedPedidos"
+      [totalItems]="pedidosCompletos.length"
+      [pageSize]="pageSize"
+      [currentPage]="currentPage()"
+      (pageChange)="onPageChange($event)"
+    />
+  </div>
+
+  <!-- 3. Com busca -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+    <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Com busca</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Filtra pedidos pelo nome do cliente</p>
+    <app-table
+      [columns]="columnsSimples"
+      [rows]="filteredPedidos"
+      [searchable]="true"
+      searchPlaceholder="Buscar por cliente..."
+      (searchChange)="onSearchChange($event)"
+      emptyMessage="Nenhum pedido encontrado para essa busca."
+    />
+  </div>
+
+  <!-- 4. Colunas customizadas: badge + progress -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+    <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Colunas customizadas</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Status como badge e progresso da entrega via app-progress, usando ColumnDef.template</p>
+    <app-table [columns]="columnsCustom" [rows]="pedidosBasicos" />
+  </div>
+
+  <!-- 5. Striped vs não-striped -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Striped</h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">striped=true (padrão)</p>
+      <app-table [columns]="columnsSimples" [rows]="pedidosBasicos" [striped]="true" />
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Não-striped</h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">striped=false</p>
+      <app-table [columns]="columnsSimples" [rows]="pedidosBasicos" [striped]="false" />
+    </div>
+  </div>
+</div>

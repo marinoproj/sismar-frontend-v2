@@ -10,6 +10,29 @@ import { navSections, NavItem } from '../nav-items';
   standalone: true,
   imports: [RouterLink, RouterLinkActive, NgClass],
   templateUrl: './sidebar.component.html',
+  styles: [`
+    nav {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+    }
+
+    nav::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    nav::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.18);
+      border-radius: 9999px;
+    }
+
+    nav::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(255, 255, 255, 0.28);
+    }
+  `],
 })
 export class SidebarComponent {
   readonly layout = inject(LayoutService);

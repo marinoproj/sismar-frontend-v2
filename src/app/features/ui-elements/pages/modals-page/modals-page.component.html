@@ -1,0 +1,39 @@
+<ng-template #orderDetailTpl>
+  <div class="space-y-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <app-kpi-card label="Valor Total" value="R$ 2.180,00" [change]="12" icon="ri-money-dollar-circle-line" />
+      <app-kpi-card label="Itens" [value]="3" [change]="0" icon="ri-shopping-bag-line" />
+      <app-kpi-card label="Progresso" value="45%" [change]="-5" icon="ri-truck-line" />
+    </div>
+    <app-table [columns]="orderItemsColumns" [rows]="orderItems" [striped]="false" />
+  </div>
+</ng-template>
+
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Modals</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Padrões de modal construídos sobre &#64;angular/cdk/dialog</p>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">Confirmação</h2>
+    <div class="flex flex-wrap gap-3">
+      <app-button variant="danger" (clicked)="openDeleteConfirm()">Excluir pedido</app-button>
+      <app-button variant="primary" (clicked)="openActionConfirm()">Enviar pedido</app-button>
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">Detalhes</h2>
+    <div class="flex flex-wrap gap-3">
+      <app-button variant="outline" (clicked)="openDetail()">Ver detalhes do pedido</app-button>
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+    <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">Formulário</h2>
+    <div class="flex flex-wrap gap-3">
+      <app-button variant="secondary" (clicked)="openCustomerForm()">Cadastrar cliente</app-button>
+    </div>
+  </div>
+</div>

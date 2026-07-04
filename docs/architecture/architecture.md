@@ -2,7 +2,7 @@
 
 > Documento vivo. Gerado por `/architecture-doc-generator`. Atualize executando a skill novamente após mudanças estruturais.
 >
-> Última atualização: 2026-07-02
+> Última atualização: 2026-07-04
 
 ---
 
@@ -207,8 +207,10 @@ Fluxo: `ThemeService.toggleMode()` → altera signal `currentMode` → adiciona/
     /cards    → CardsPageComponent
     /dropdowns → DropdownsPageComponent
     /list-group → ListGroupPageComponent
+    /modals   → ModalsPageComponent
     /progress → ProgressPageComponent
     /spinners → SpinnersPageComponent
+    /tables   → TablesPageComponent
     /toasts   → ToastsPageComponent
   /maps       → MapsPageComponent             (lazy)
 **            → NotFoundComponent             (lazy)
@@ -249,7 +251,7 @@ Todos os componentes estão em `src/app/shared/ui/` e são standalone — import
 
 | Componente | Selector | Inputs principais | Uso |
 |-----------|----------|------------------|-----|
-| Table | `app-table` | `columns*`, `rows*`, `actions`, `loading`, `totalItems`, `pageSize`, `currentPage` | Tabela genérica com colunas dinâmicas, ações por linha e paginação |
+| Table | `app-table` | `columns*`, `rows*`, `actions`, `loading`, `totalItems`, `pageSize`, `currentPage`, `striped` (default `true`), `searchable`, `searchPlaceholder` | Tabela genérica com colunas dinâmicas (incl. `ColumnDef.template` para células customizadas como badge/progress), ações por linha, paginação, striping opcional e busca embutida (`(searchChange)`) |
 | KPI Card | `app-kpi-card` | `label*`, `value*`, `change*`, `icon*` | Card de métrica com variação percentual e ícone |
 | Ticker Card | `app-ticker-card` | `symbol*`, `name*`, `currentValue*`, `change*`, `trend*`, `currency` | Card de ativo financeiro com tendência de alta/baixa |
 
@@ -292,6 +294,24 @@ Todos os componentes estão em `src/app/shared/ui/` e são standalone — import
 | Button | `app-button` | `variant` (primary/secondary/outline/danger/ghost), `size` (sm/md/lg), `loading`, `disabled`, `type` | Botão de ação |
 | Dropdown | `app-dropdown` | `items*`, `label` | Menu suspenso com lista de ações |
 | Breadcrumb | `app-breadcrumb` | — | Navegação hierárquica automática (lê `route.data.breadcrumb`) |
+
+### Modais (`@angular/cdk/dialog`)
+
+Localizados em `src/app/shared/ui/modal/`. Construídos sobre `@angular/cdk/dialog` (não `@angular/cdk/overlay` cru, não hand-rolled) — abertos via `inject(Dialog).open(Component, config)`.
+
+| Componente | Uso | `DIALOG_DATA` |
+|-----------|-----|---------------|
+| `ModalShellComponent` (`app-modal-shell`) | Casca visual compartilhada (painel, backdrop, header com título + X, slot de conteúdo, slot `[modal-footer]`). Usada internamente pelos 3 dialogs abaixo — não é aberta diretamente via `Dialog.open()`. | — (`@Input title`, `@Input panelClass`) |
+| `ConfirmDialogComponent` (`app-confirm-dialog`) | Confirmação de ação (exclusão ou genérica), reaproveitável — muda só o `data` passado | `{ title, message, confirmLabel?, cancelLabel?, variant?: 'danger'\|'primary' }`, retorna `boolean` no `DialogRef.close()` |
+| `DetailModalComponent` (`app-detail-modal`) | Modal de detalhes genérico — renderiza um `TemplateRef` arbitrário via `NgTemplateOutlet`, permitindo compor qualquer combinação de componentes existentes (KPI cards, tabelas, gráficos) sem criar um novo componente de dialog | `{ title, template: TemplateRef<unknown> }` |
+
+**⚠️ Ao chamar `dialog.open(...)`, sempre passe `viewContainerRef: this.viewContainerRef`** (injetando `ViewContainerRef` no componente chamador). Sem isso, o componente do dialog é criado fora da árvore de change detection da aplicação e seu conteúdo (interpolações, bindings) não renderiza — ver `docs/planning/ui-elements-tables-modals-nav/issues/02-modals-confirm-e-detail.md` para o diagnóstico completo.
+
+A centralização do modal depende de um fallback CSS em `src/styles.css` (`.cdk-global-overlay-wrapper { justify-content: center; align-items: center; }`), pois o `GlobalPositionStrategy` do CDK não aplicou a centralização via JS de forma confiável neste app.
+
+O CSS estrutural do overlay (`node_modules/@angular/cdk/overlay-prebuilt.css`) é registrado em `angular.json` › `styles` do projeto `frontend-admin-template` — obrigatório para o backdrop/posicionamento funcionarem.
+
+Exemplo de uso específico de feature (não genérico): `CustomerFormDialogComponent` em `src/app/features/ui-elements/pages/modals-page/customer-form-dialog/` — dialog de formulário com `ReactiveFormsModule` colocado junto da página que o usa, já que formulários variam por caso de uso e não fazem sentido como componente genérico em `shared/ui/`.
 
 ### Layout e containers
 

@@ -1,0 +1,81 @@
+<app-modal-shell title="Cadastrar cliente" panelClass="max-w-lg" (closed)="cancel()">
+  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-4">
+
+    <!-- Nome -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        Nome <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        formControlName="nome"
+        placeholder="Nome completo"
+        [class.border-red-500]="nomeControl.invalid && nomeControl.touched"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+      />
+      @if (nomeControl.invalid && nomeControl.touched) {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400">Nome é obrigatório.</p>
+      }
+    </div>
+
+    <!-- E-mail -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        E-mail <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="email"
+        formControlName="email"
+        placeholder="cliente@email.com"
+        [class.border-red-500]="emailControl.invalid && emailControl.touched"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+      />
+      @if (emailControl.invalid && emailControl.touched) {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400">
+          @if (emailControl.hasError('required')) { E-mail é obrigatório. }
+          @else if (emailControl.hasError('email')) { Informe um e-mail válido. }
+        </p>
+      }
+    </div>
+
+    <!-- Telefone -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Telefone</label>
+      <input
+        type="tel"
+        formControlName="telefone"
+        placeholder="(00) 00000-0000"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+      />
+    </div>
+
+    <!-- Categoria -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Categoria</label>
+      <select
+        formControlName="categoria"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+      >
+        <option value="Varejo">Varejo</option>
+        <option value="Atacado">Atacado</option>
+        <option value="Distribuidor">Distribuidor</option>
+      </select>
+    </div>
+
+    <!-- Ativo -->
+    <div class="flex items-center gap-2">
+      <input
+        type="checkbox"
+        formControlName="ativo"
+        id="customer-ativo"
+        class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+      />
+      <label for="customer-ativo" class="text-sm text-gray-700 dark:text-gray-300">Cliente ativo</label>
+    </div>
+  </form>
+
+  <ng-container modal-footer>
+    <app-button variant="ghost" (clicked)="cancel()">Cancelar</app-button>
+    <app-button [disabled]="form.invalid" (clicked)="save()">Salvar</app-button>
+  </ng-container>
+</app-modal-shell>

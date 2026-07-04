@@ -1,3 +1,16 @@
+<!-- Busca -->
+@if (searchable) {
+  <div class="mb-3 max-w-xs relative">
+    <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
+    <input
+      type="text"
+      [placeholder]="searchPlaceholder"
+      (input)="onSearchInput($any($event.target).value)"
+      class="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+    />
+  </div>
+}
+
 <!-- Info de range -->
 @if (showPagination && !loading) {
   <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
@@ -61,7 +74,7 @@
       <!-- Dados -->
       } @else {
         @for (row of rows; track $index) {
-          <tr class="transition-colors odd:bg-white even:bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700">
+          <tr [class]="rowClasses">
             @for (col of columns; track col.key) {
               <td [ngClass]="alignClass(col.align)" class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                 @if (col.template) {
