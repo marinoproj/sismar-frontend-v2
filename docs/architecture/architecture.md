@@ -2,7 +2,7 @@
 
 > Documento vivo. Gerado por `/architecture-doc-generator`. Atualize executando a skill novamente após mudanças estruturais.
 >
-> Última atualização: 2026-06-30
+> Última atualização: 2026-07-02
 
 ---
 
@@ -42,12 +42,21 @@ src/
     app.component.ts   # raiz da aplicação
     app.config.ts      # providers globais
     app.routes.ts      # rotas raiz
+  environments/        # environment.ts (dev) e environment.prod.ts (prod), trocados via fileReplacements
   vendas-wc/           # wrapper do web component <sismar-vendas>
   assets/              # imagens e arquivos estáticos
   styles.css           # estilos globais + CSS custom properties
   main.ts              # bootstrap da aplicação principal (Zone.js)
   main-vendas-wc.ts    # bootstrap do web component (zoneless)
 ```
+
+### `environments/`
+
+**O que vai aqui:** `environment.ts` (usado por padrão, contém a config de desenvolvimento) e `environment.prod.ts` (usado apenas na configuration `production`). Ambos exportam um objeto `environment: { production: boolean, apiUrl: string }`. Compartilhado pelos dois projetos do `angular.json` (`frontend-admin-template` e `vendas-wc`), que têm o mesmo `sourceRoot`.
+
+**O que NÃO vai aqui:** segredos ou credenciais — os arquivos são versionados no git. Ambientes além de dev/prod (ex.: staging) não são modelados.
+
+**Por que existe separada:** mecanismo nativo do Angular CLI (`fileReplacements`) para alternar configuração por ambiente no build/serve, sem depender de `.env` ou variáveis de ambiente do sistema operacional. Ver `docs/planning/environment-config/PRD.md`.
 
 ### `core/`
 
@@ -341,7 +350,7 @@ Todos registrados com `providedIn: 'root'` — uma única instância compartilha
 - `DashboardService`
 - `DASHBOARD_REPOSITORY` → `DashboardMockRepository`
 
-**Build:** `pnpm build:vendas-wc` → executa `ng build vendas-wc` (ESM) + `node scripts/bundle-wc.js`
+**Build:** `pnpm build:vendas-wc` → executa `ng build vendas-wc` (ESM) + `node scripts/bundle-wc.js`. Resolve para a configuration `production` por padrão (usa `environment.prod.ts`); rode `ng build vendas-wc --configuration=development` diretamente para embutir `environment.ts` (dev) — sem script npm dedicado ainda.
 
 O script `bundle-wc.js` realiza três etapas:
 1. Converte ESM → IIFE via esbuild (`bundle: false, format: 'iife'`)
@@ -358,8 +367,12 @@ O script `bundle-wc.js` realiza três etapas:
 
 | Script | Comando | O que faz |
 |--------|---------|----------|
-| `start` | `pnpm ng serve` | Inicia servidor de desenvolvimento na porta padrão (4200) |
-| `build` | `pnpm ng build` | Build de produção da app principal em `dist/frontend-admin-template/` |
+| `start` | `pnpm ng serve` | Inicia servidor de desenvolvimento na porta padrão (4200), configuration `development` por padrão |
+| `start:dev` | `pnpm ng serve --configuration=development` | Igual a `start`, mas explícito — usa `environment.ts` |
+| `start:prod` | `pnpm ng serve --configuration=production` | Dev server servindo com `environment.prod.ts` (para testar prod localmente) |
+| `build` | `pnpm ng build` | Build de produção da app principal em `dist/frontend-admin-template/`, configuration `production` por padrão, usa `environment.prod.ts` |
+| `build:dev` | `pnpm ng build --configuration=development` | Build com `environment.ts` (apiUrl de desenvolvimento embutida) |
+| `build:prod` | `pnpm ng build --configuration=production` | Igual a `build`, mas explícito — usa `environment.prod.ts` |
 | `watch` | `pnpm ng build --watch --configuration development` | Build incremental em modo dev (sem otimizações) |
 | `test` | `pnpm jest --watchAll` | Executa testes Jest em modo watch interativo |
 | `test:ci` | `pnpm jest --ci` | Executa testes Jest sem interatividade (para CI/CD) |
