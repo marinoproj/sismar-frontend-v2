@@ -1,4 +1,4 @@
-# Arquitetura — frontend-admin-template
+# Arquitetura — sismar-frontend-v2
 
 > Documento vivo. Gerado por `/architecture-doc-generator`. Atualize executando a skill novamente após mudanças estruturais.
 >
@@ -359,7 +359,7 @@ O script `bundle-wc.js` realiza três etapas:
 | Script | Comando | O que faz |
 |--------|---------|----------|
 | `start` | `pnpm ng serve` | Inicia servidor de desenvolvimento na porta padrão (4200) |
-| `build` | `pnpm ng build` | Build de produção da app principal em `dist/frontend-admin-template/` |
+| `build` | `pnpm ng build` | Build de produção da app principal em `dist/sismar-frontend-v2/` |
 | `watch` | `pnpm ng build --watch --configuration development` | Build incremental em modo dev (sem otimizações) |
 | `test` | `pnpm jest --watchAll` | Executa testes Jest em modo watch interativo |
 | `test:ci` | `pnpm jest --ci` | Executa testes Jest sem interatividade (para CI/CD) |

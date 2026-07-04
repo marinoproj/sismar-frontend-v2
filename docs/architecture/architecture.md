@@ -1,4 +1,4 @@
-# Arquitetura — frontend-admin-template
+# Arquitetura — sismar-frontend-v2
 
 > Documento vivo. Gerado por `/architecture-doc-generator`. Atualize executando a skill novamente após mudanças estruturais.
 >
@@ -52,7 +52,7 @@ src/
 
 ### `environments/`
 
-**O que vai aqui:** `environment.ts` (usado por padrão, contém a config de desenvolvimento) e `environment.prod.ts` (usado apenas na configuration `production`). Ambos exportam um objeto `environment: { production: boolean, apiUrl: string }`. Compartilhado pelos dois projetos do `angular.json` (`frontend-admin-template` e `vendas-wc`), que têm o mesmo `sourceRoot`.
+**O que vai aqui:** `environment.ts` (usado por padrão, contém a config de desenvolvimento) e `environment.prod.ts` (usado apenas na configuration `production`). Ambos exportam um objeto `environment: { production: boolean, apiUrl: string }`. Compartilhado pelos dois projetos do `angular.json` (`sismar-frontend-v2` e `vendas-wc`), que têm o mesmo `sourceRoot`.
 
 **O que NÃO vai aqui:** segredos ou credenciais — os arquivos são versionados no git. Ambientes além de dev/prod (ex.: staging) não são modelados.
 
@@ -309,7 +309,7 @@ Localizados em `src/app/shared/ui/modal/`. Construídos sobre `@angular/cdk/dial
 
 A centralização do modal depende de um fallback CSS em `src/styles.css` (`.cdk-global-overlay-wrapper { justify-content: center; align-items: center; }`), pois o `GlobalPositionStrategy` do CDK não aplicou a centralização via JS de forma confiável neste app.
 
-O CSS estrutural do overlay (`node_modules/@angular/cdk/overlay-prebuilt.css`) é registrado em `angular.json` › `styles` do projeto `frontend-admin-template` — obrigatório para o backdrop/posicionamento funcionarem.
+O CSS estrutural do overlay (`node_modules/@angular/cdk/overlay-prebuilt.css`) é registrado em `angular.json` › `styles` do projeto `sismar-frontend-v2` — obrigatório para o backdrop/posicionamento funcionarem.
 
 Exemplo de uso específico de feature (não genérico): `CustomerFormDialogComponent` em `src/app/features/ui-elements/pages/modals-page/customer-form-dialog/` — dialog de formulário com `ReactiveFormsModule` colocado junto da página que o usa, já que formulários variam por caso de uso e não fazem sentido como componente genérico em `shared/ui/`.
 
@@ -390,7 +390,7 @@ O script `bundle-wc.js` realiza três etapas:
 | `start` | `pnpm ng serve` | Inicia servidor de desenvolvimento na porta padrão (4200), configuration `development` por padrão |
 | `start:dev` | `pnpm ng serve --configuration=development` | Igual a `start`, mas explícito — usa `environment.ts` |
 | `start:prod` | `pnpm ng serve --configuration=production` | Dev server servindo com `environment.prod.ts` (para testar prod localmente) |
-| `build` | `pnpm ng build` | Build de produção da app principal em `dist/frontend-admin-template/`, configuration `production` por padrão, usa `environment.prod.ts` |
+| `build` | `pnpm ng build` | Build de produção da app principal em `dist/sismar-frontend-v2/`, configuration `production` por padrão, usa `environment.prod.ts` |
 | `build:dev` | `pnpm ng build --configuration=development` | Build com `environment.ts` (apiUrl de desenvolvimento embutida) |
 | `build:prod` | `pnpm ng build --configuration=production` | Igual a `build`, mas explícito — usa `environment.prod.ts` |
 | `watch` | `pnpm ng build --watch --configuration development` | Build incremental em modo dev (sem otimizações) |

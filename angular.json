@@ -43,7 +43,7 @@
         }
       }
     },
-    "frontend-admin-template": {
+    "sismar-frontend-v2": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -53,7 +53,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/frontend-admin-template",
+            "outputPath": "dist/sismar-frontend-v2",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -109,10 +109,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "frontend-admin-template:build:production"
+              "buildTarget": "sismar-frontend-v2:build:production"
             },
             "development": {
-              "buildTarget": "frontend-admin-template:build:development"
+              "buildTarget": "sismar-frontend-v2:build:development"
             }
           },
           "defaultConfiguration": "development"
