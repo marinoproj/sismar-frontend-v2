@@ -1,0 +1,31 @@
+<app-modal-shell title="Como deseja cadastrar a área?" panelClass="max-w-md" (closed)="cancel()">
+  <div class="space-y-3">
+    <button
+      type="button"
+      (click)="chooseManual()"
+      class="w-full flex items-center gap-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg text-left hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-colors"
+    >
+      <i class="ri-list-check-2 text-xl text-[var(--color-primary)]"></i>
+      <span>
+        <span class="block text-sm font-medium text-gray-900 dark:text-white">Informar dados manualmente</span>
+        <span class="block text-xs text-gray-500 dark:text-gray-400">Digite nome, porto e as coordenadas do perímetro.</span>
+      </span>
+    </button>
+
+    <button
+      type="button"
+      (click)="chooseDraw()"
+      class="w-full flex items-center gap-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg text-left hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-colors"
+    >
+      <i class="ri-map-2-line text-xl text-[var(--color-primary)]"></i>
+      <span>
+        <span class="block text-sm font-medium text-gray-900 dark:text-white">Desenhar no mapa</span>
+        <span class="block text-xs text-gray-500 dark:text-gray-400">Clique sucessivamente no mapa para desenhar o perímetro.</span>
+      </span>
+    </button>
+  </div>
+
+  <ng-container modal-footer>
+    <app-button variant="ghost" (clicked)="cancel()">Cancelar</app-button>
+  </ng-container>
+</app-modal-shell>

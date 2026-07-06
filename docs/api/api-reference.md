@@ -773,6 +773,44 @@ curl -X POST http://localhost:8080/area/6/activate \
 | `404 Not Found` | Área não existe |
 | `400 Bad Request` | Nenhum job retroativo foi executado ainda; ou o último job não está `DONE`/`CANCELLED` (ex.: ainda `RUNNING`) |
 
+#### `POST /area/{id}/deactivate` — Inativar
+
+Marca a área como `active: false`, para que ela pare de gerar eventos de entrada/saída sem precisar ser excluída. Diferente de `activate`, não valida o estado atual — chamar em uma área já inativa é um no-op válido (idempotente).
+
+```bash
+curl -X POST http://localhost:8080/area/6/deactivate \
+  -H "Authorization: Bearer <accessToken>"
+```
+
+Resposta (`200 OK`): `AreaDTO` com `active: false`.
+
+**Erros possíveis:**
+
+| Status | Quando ocorre |
+|---|---|
+| `404 Not Found` | Área não existe |
+| `409 Conflict` | Existe um job retroativo `RUNNING` ou `CANCELLING` para a área — `"Area 6 already has a job in progress"` |
+
+#### `DELETE /area/{id}` — Excluir (soft-delete)
+
+Exclui a área preenchendo `dhDeleted`. Só é permitida quando a área já está inativa, sem job retroativo em andamento, e sem nenhuma referência ativa em `PortConfig` ou `Berth` — nenhuma exclusão em cascata é feita.
+
+```bash
+curl -X DELETE http://localhost:8080/area/6 \
+  -H "Authorization: Bearer <accessToken>"
+```
+
+Resposta: `200 OK`, sem corpo.
+
+**Erros possíveis:**
+
+| Status | Quando ocorre |
+|---|---|
+| `404 Not Found` | Área não existe |
+| `400 Bad Request` | Área está `active: true` — `"Area 6 is active and cannot be deleted. Deactivate it first."` |
+| `409 Conflict` | Existe um job retroativo `RUNNING` ou `CANCELLING` para a área — `"Area 6 already has a job in progress"` |
+| `409 Conflict` | Área está configurada como fundeio, canal de acesso ou perímetro em algum `PortConfig`, ou vinculada a algum `Berth` não deletado — `"Area 6 cannot be deleted because it is in use by a PortConfig or Berth"` |
+
 #### `POST /area/{id}/retroactive-events` — Disparar geração retroativa de eventos
 
 Processa (de forma assíncrona) o histórico de posições AIS para popular os eventos de entrada/saída da área antes dela ser ativada.

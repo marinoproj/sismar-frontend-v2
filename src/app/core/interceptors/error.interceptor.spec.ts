@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, HttpContext, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, Router } from '@angular/router';
 import { errorInterceptor } from './error.interceptor';
 import { AuthService } from '../auth/auth.service';
 import { ToastService } from '../services/toast.service';
+import { SKIP_ERROR_TOAST } from './skip-error-toast.context';
 
 describe('errorInterceptor', () => {
   let http: HttpClient;
@@ -66,6 +67,16 @@ describe('errorInterceptor', () => {
     expect(toastShow).toHaveBeenCalledWith(
       expect.objectContaining({ type: 'error', message: expect.any(String) }),
     );
+  });
+
+  it('does not show a toast when the request is marked with SKIP_ERROR_TOAST', () => {
+    http
+      .get('/area/6/retroactive-jobs/last', { context: new HttpContext().set(SKIP_ERROR_TOAST, true) })
+      .subscribe({ error: () => {} });
+
+    httpMock.expectOne('/area/6/retroactive-jobs/last').flush('not found', { status: 404, statusText: 'Not Found' });
+
+    expect(toastShow).not.toHaveBeenCalled();
   });
 
   it('does not redirect on 401 from /auth/login, but still shows a toast', () => {

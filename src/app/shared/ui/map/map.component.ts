@@ -1,9 +1,9 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   Input,
   OnDestroy,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 import * as L from 'leaflet';
@@ -18,7 +18,7 @@ import { MapService } from './map.service';
     <ng-content />
   `,
 })
-export class MapComponent implements AfterViewInit, OnDestroy {
+export class MapComponent implements OnInit, OnDestroy {
   @Input() center: [number, number] = [-15.78, -47.93];
   @Input() zoom = 5;
   @Input() height = '500px';
@@ -29,7 +29,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   constructor(private readonly mapService: MapService) {}
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
+    // Precisa rodar antes do ngOnInit dos filhos projetados via <ng-content> (ex.: app-map-polygon),
+    // que já leem mapService.getMap() no próprio ngOnInit — em ngAfterViewInit seria tarde demais.
     this.map = L.map(this.mapContainer.nativeElement, {
       center: this.center,
       zoom: this.zoom,

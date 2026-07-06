@@ -8,10 +8,10 @@ import { TERMINAL_CONFIG_REPOSITORY } from './terminals/repositories/terminal-co
 import { TerminalConfigService } from './terminals/services/terminal-config.service';
 import { BerthConfigHttpRepository } from './berths/repositories/berth-config-http.repository';
 import { BERTH_CONFIG_REPOSITORY } from './berths/repositories/berth-config.repository';
-import { AreaHttpRepository } from './berths/repositories/area-http.repository';
-import { AREA_REPOSITORY } from './berths/repositories/area.repository';
 import { BerthConfigService } from './berths/services/berth-config.service';
-import { AreaService } from './berths/services/area.service';
+import { AreaHttpRepository } from './areas/repositories/area-http.repository';
+import { AREA_REPOSITORY } from './areas/repositories/area.repository';
+import { AreaService } from './areas/services/area.service';
 
 export const settingsRoutes: Routes = [
   { path: '', redirectTo: 'ports', pathMatch: 'full' },
@@ -59,6 +59,21 @@ export const settingsRoutes: Routes = [
     loadComponent: () =>
       import('./berths/pages/berths-config-page/berths-config-page.component').then(
         (m) => m.BerthsConfigPageComponent,
+      ),
+  },
+  {
+    path: 'areas',
+    data: { breadcrumb: 'Áreas', feature: 'CONFIGURACAO_AREA' },
+    canActivate: [featureGuard],
+    providers: [
+      AreaService,
+      { provide: AREA_REPOSITORY, useClass: AreaHttpRepository },
+      PortConfigService,
+      { provide: PORT_CONFIG_REPOSITORY, useClass: PortConfigHttpRepository },
+    ],
+    loadComponent: () =>
+      import('./areas/pages/areas-config-page/areas-config-page.component').then(
+        (m) => m.AreasConfigPageComponent,
       ),
   },
 ];

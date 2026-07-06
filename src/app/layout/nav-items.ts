@@ -79,6 +79,7 @@ const allNavSections: NavSection[] = [
           { label: 'Portos', icon: 'ri-anchor-line', route: '/settings/ports', feature: 'CONFIGURACAO_PORTO' },
           { label: 'Terminais', icon: 'ri-building-4-line', route: '/settings/terminals', feature: 'CONFIGURACAO_TERMINAL' },
           { label: 'Berços', icon: 'ri-ship-2-line', route: '/settings/berths', feature: 'CONFIGURACAO_BERCO' },
+          { label: 'Áreas', icon: 'ri-shape-line', route: '/settings/areas', feature: 'CONFIGURACAO_AREA' },
         ],
       },
     ],

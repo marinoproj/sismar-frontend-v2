@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { ToastService } from '../services/toast.service';
+import { SKIP_ERROR_TOAST } from './skip-error-toast.context';
 
 const GENERIC_ERROR_MESSAGE = 'Ocorreu um erro inesperado. Tente novamente.';
 
@@ -20,7 +21,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         if (error.status === 401 && !isPublicAuthRequest) {
           auth.clearLocalSession();
           router.navigate(['/login']);
-        } else {
+        } else if (!req.context.get(SKIP_ERROR_TOAST)) {
           toast.show({ message: error.error?.message ?? GENERIC_ERROR_MESSAGE, type: 'error' });
         }
       }

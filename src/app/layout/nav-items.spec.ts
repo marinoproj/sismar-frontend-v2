@@ -48,6 +48,6 @@ describe('getNavSections', () => {
     const sections = getNavSections({ production: false, hasFeature: () => true });
     const settings = sections.flatMap((s) => s.items).find((i) => i.label === 'Configurações');
 
-    expect(settings?.children?.map((c) => c.label)).toEqual(['Portos', 'Terminais', 'Berços']);
+    expect(settings?.children?.map((c) => c.label)).toEqual(['Portos', 'Terminais', 'Berços', 'Áreas']);
   });
 });

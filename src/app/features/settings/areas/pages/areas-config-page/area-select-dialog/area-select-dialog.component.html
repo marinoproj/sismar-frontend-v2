@@ -1,0 +1,19 @@
+<app-modal-shell [title]="data.title" panelClass="max-w-md" (closed)="cancel()">
+  <div>
+    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Área</label>
+    <select
+      [formControl]="control"
+      class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+    >
+      <option [ngValue]="null" disabled>Selecione uma área</option>
+      @for (area of areas; track area.id) {
+        <option [ngValue]="area.id">{{ area.name }}</option>
+      }
+    </select>
+  </div>
+
+  <ng-container modal-footer>
+    <app-button variant="ghost" (clicked)="cancel()">Cancelar</app-button>
+    <app-button [disabled]="control.value == null" (clicked)="confirm()">Confirmar</app-button>
+  </ng-container>
+</app-modal-shell>

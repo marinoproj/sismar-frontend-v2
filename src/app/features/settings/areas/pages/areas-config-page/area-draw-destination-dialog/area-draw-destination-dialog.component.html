@@ -1,0 +1,31 @@
+<app-modal-shell title="O que deseja fazer com este perímetro?" panelClass="max-w-md" (closed)="cancel()">
+  <div class="space-y-3">
+    <button
+      type="button"
+      (click)="chooseCreate()"
+      class="w-full flex items-center gap-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg text-left hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-colors"
+    >
+      <i class="ri-add-circle-line text-xl text-[var(--color-primary)]"></i>
+      <span>
+        <span class="block text-sm font-medium text-gray-900 dark:text-white">Criar nova área</span>
+        <span class="block text-xs text-gray-500 dark:text-gray-400">Usa o perímetro desenhado para cadastrar uma área nova.</span>
+      </span>
+    </button>
+
+    <button
+      type="button"
+      (click)="chooseUpdate()"
+      class="w-full flex items-center gap-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg text-left hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-colors"
+    >
+      <i class="ri-refresh-line text-xl text-[var(--color-primary)]"></i>
+      <span>
+        <span class="block text-sm font-medium text-gray-900 dark:text-white">Atualizar área existente</span>
+        <span class="block text-xs text-gray-500 dark:text-gray-400">Substitui o perímetro de uma área já cadastrada, mantendo nome/porto/status.</span>
+      </span>
+    </button>
+  </div>
+
+  <ng-container modal-footer>
+    <app-button variant="ghost" (clicked)="cancel()">Cancelar</app-button>
+  </ng-container>
+</app-modal-shell>

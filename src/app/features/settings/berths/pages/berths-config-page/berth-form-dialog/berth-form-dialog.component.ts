@@ -10,8 +10,8 @@ import { ToastService } from '../../../../../../core/services/toast.service';
 import { PortConfigService } from '../../../../ports/services/port-config.service';
 import { TERMINAL_CONFIG_REPOSITORY } from '../../../../terminals/repositories/terminal-config.repository';
 import { TerminalConfig } from '../../../../terminals/models/terminal-config.model';
-import { AreaService } from '../../../services/area.service';
-import { Area } from '../../../models/area.model';
+import { AreaService } from '../../../../areas/services/area.service';
+import { Area } from '../../../../areas/models/area.model';
 import { BerthConfigService } from '../../../services/berth-config.service';
 import { BerthConfig, BerthConfigInput } from '../../../models/berth-config.model';
 

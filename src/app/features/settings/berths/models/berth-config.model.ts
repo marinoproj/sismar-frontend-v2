@@ -1,5 +1,5 @@
 import { TerminalConfig } from '../../terminals/models/terminal-config.model';
-import { Area } from './area.model';
+import { Area } from '../../areas/models/area.model';
 
 export interface BerthConfig {
   id: number;

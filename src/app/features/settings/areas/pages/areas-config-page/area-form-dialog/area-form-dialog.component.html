@@ -1,0 +1,119 @@
+<app-modal-shell [title]="isEdit ? 'Editar área' : 'Nova área'" panelClass="max-w-xl" (closed)="cancel()">
+  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-4">
+
+    <!-- Nome -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        Nome <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        formControlName="name"
+        placeholder="Fundeio Norte - Santos"
+        [class.border-red-500]="nameControl.invalid && nameControl.touched"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+      />
+      @if (nameControl.invalid && nameControl.touched) {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400">Nome é obrigatório.</p>
+      }
+    </div>
+
+    <!-- Porto (opcional) -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Porto</label>
+      <select
+        formControlName="portId"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+      >
+        <option [ngValue]="null">Nenhum</option>
+        @for (port of ports; track port.id) {
+          <option [ngValue]="port.id">{{ port.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Coordenadas -->
+    @if (data.hideCoordinatesEditor) {
+      <div class="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2">
+        <i class="ri-map-pin-line mr-1"></i>
+        Perímetro com {{ uniqueValidCoordinatesCount }} vértices já desenhado no mapa.
+      </div>
+    } @else {
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Coordenadas <span class="text-red-500">*</span>
+          </label>
+          <app-button type="button" variant="ghost" size="sm" (clicked)="addCoordinate()">
+            <i class="ri-add-line"></i>
+            Adicionar coordenada
+          </app-button>
+        </div>
+
+        <div formArrayName="coordinates" class="space-y-2">
+          @for (group of coordinateGroups; track $index; let i = $index; let first = $first; let last = $last) {
+            <div [formGroupName]="i" class="flex items-center gap-2">
+              <input
+                type="number"
+                formControlName="lat"
+                step="any"
+                placeholder="Latitude"
+                [class.border-red-500]="group.get('lat')!.invalid && group.get('lat')!.touched"
+                class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              />
+              <input
+                type="number"
+                formControlName="lon"
+                step="any"
+                placeholder="Longitude"
+                [class.border-red-500]="group.get('lon')!.invalid && group.get('lon')!.touched"
+                class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              />
+              <button
+                type="button"
+                [disabled]="first"
+                (click)="moveCoordinateUp(i)"
+                class="p-1.5 rounded text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Mover para cima"
+              >
+                <i class="ri-arrow-up-line"></i>
+              </button>
+              <button
+                type="button"
+                [disabled]="last"
+                (click)="moveCoordinateDown(i)"
+                class="p-1.5 rounded text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Mover para baixo"
+              >
+                <i class="ri-arrow-down-line"></i>
+              </button>
+              <button
+                type="button"
+                [disabled]="coordinateGroups.length <= 1"
+                (click)="removeCoordinate(i)"
+                class="p-1.5 rounded text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Remover coordenada"
+              >
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </div>
+          }
+        </div>
+
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          O perímetro é fechado automaticamente (a primeira coordenada é repetida como última ao salvar).
+        </p>
+        @if (!hasMinimumCoordinates) {
+          <p class="mt-1 text-xs text-red-600 dark:text-red-400">
+            Informe ao menos 3 coordenadas únicas e válidas (latitude entre -90 e 90, longitude entre -180 e 180).
+          </p>
+        }
+      </div>
+    }
+  </form>
+
+  <ng-container modal-footer>
+    <app-button variant="ghost" [disabled]="saving()" (clicked)="cancel()">Cancelar</app-button>
+    <app-button [disabled]="!canSave" [loading]="saving()" (clicked)="save()">Salvar</app-button>
+  </ng-container>
+</app-modal-shell>

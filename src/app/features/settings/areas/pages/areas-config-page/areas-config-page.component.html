@@ -1,0 +1,56 @@
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Áreas</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Cadastro de áreas (perímetros)</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <app-button [variant]="viewMode() === 'table' ? 'primary' : 'outline'" size="sm" (clicked)="setViewMode('table')">
+        <i class="ri-table-line"></i>
+        Tabela
+      </app-button>
+      <app-button [variant]="viewMode() === 'map' ? 'primary' : 'outline'" size="sm" (clicked)="setViewMode('map')">
+        <i class="ri-map-2-line"></i>
+        Mapa
+      </app-button>
+      <ng-container *appHasFeature="'CONFIGURACAO_AREA_ADICIONAR'">
+        <app-button (clicked)="openCreateDialog()">
+          <i class="ri-add-line"></i>
+          Adicionar área
+        </app-button>
+      </ng-container>
+    </div>
+  </div>
+
+  @if (viewMode() === 'table') {
+    <!-- Tabela -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      <app-table
+        [columns]="columns"
+        [rows]="rows"
+        [actions]="actions"
+        [searchable]="true"
+        searchPlaceholder="Pesquisar por nome da área..."
+        emptyMessage="Nenhuma área encontrada."
+        (searchChange)="onSearchChange($event)"
+      />
+    </div>
+  } @else {
+    <!-- Mapa -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      <app-area-map-view
+        [areas]="areas"
+        [startDrawingRequestId]="startDrawingRequestId()"
+        (drawFinished)="onDrawFinished($event)"
+      />
+    </div>
+  }
+
+</div>
+
+<!-- Status: Ativa/Inativa -->
+<ng-template #statusTpl let-row>
+  <app-badge [label]="row['active'] ? 'Ativa' : 'Inativa'" [variant]="row['active'] ? 'success' : 'default'" />
+</ng-template>

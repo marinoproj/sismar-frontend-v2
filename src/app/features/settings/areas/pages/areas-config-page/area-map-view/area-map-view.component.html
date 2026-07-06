@@ -1,0 +1,32 @@
+<div class="relative">
+  <app-map [center]="defaultCenter" [zoom]="defaultZoom" height="600px">
+    @for (area of activeAreas; track area.id) {
+      <app-map-polygon [points]="polygonPoints(area)" color="#22c55e" />
+      @if (polygonPoints(area).length > 0) {
+        <app-area-name-label [position]="polygonPoints(area)[0]" [name]="area.name" />
+      }
+    }
+  </app-map>
+
+  @if (isDrawing()) {
+    <div class="absolute top-3 left-3 z-[1000] max-w-xs bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-3 space-y-2">
+      <p class="text-sm font-medium text-gray-900 dark:text-white">
+        Modo de desenho ativo
+      </p>
+      <p class="text-xs text-gray-500 dark:text-gray-400">
+        Clique no mapa para adicionar vértices ({{ draftVertexCount() }} adicionados, mínimo {{ minPointsToClose }}).
+        @if (closeHintActive()) {
+          <span class="block mt-1 font-medium text-yellow-600 dark:text-yellow-400">
+            Clique novamente para fechar o perímetro.
+          </span>
+        } @else {
+          <span class="block mt-1">Aproxime-se do primeiro ponto para fechar o perímetro.</span>
+        }
+        <span class="block mt-1">Pressione ESC para cancelar.</span>
+      </p>
+      <app-button type="button" variant="ghost" size="sm" (clicked)="cancelDrawing()">
+        Cancelar desenho
+      </app-button>
+    </div>
+  }
+</div>

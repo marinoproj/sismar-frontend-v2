@@ -1,0 +1,111 @@
+<app-modal-shell [title]="'Job retroativo — ' + data.area.name" panelClass="max-w-lg" (closed)="closeDialog()">
+  <div class="space-y-5">
+
+    <!-- Status do último job -->
+    <div>
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">Último job</h3>
+        <app-button type="button" variant="ghost" size="sm" [loading]="loadingJob()" (clicked)="refreshStatus()">
+          <i class="ri-refresh-line"></i>
+          Atualizar status
+        </app-button>
+      </div>
+
+      @if (loadingJob()) {
+        <p class="text-sm text-gray-500 dark:text-gray-400">Carregando...</p>
+      } @else if (!job()) {
+        <p class="text-sm text-gray-500 dark:text-gray-400">Nenhum job disparado ainda para esta área.</p>
+      } @else {
+        <dl class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+          <dt class="text-gray-500 dark:text-gray-400">Modo</dt>
+          <dd class="text-gray-900 dark:text-white">{{ job()!.mode === 'FULL' ? 'Completo' : 'Incremental' }}</dd>
+
+          <dt class="text-gray-500 dark:text-gray-400">Status</dt>
+          <dd class="text-gray-900 dark:text-white">{{ job()!.status }}</dd>
+
+          @if (job()!.progressPercent != null) {
+            <dt class="text-gray-500 dark:text-gray-400">Progresso</dt>
+            <dd class="text-gray-900 dark:text-white">
+              {{ job()!.progressPercent }}% ({{ job()!.mmsisProcessed ?? 0 }}/{{ job()!.mmsisTotal ?? 0 }} MMSIs)
+            </dd>
+          }
+
+          @if (job()!.errorMessage) {
+            <dt class="text-gray-500 dark:text-gray-400">Erro</dt>
+            <dd class="text-red-600 dark:text-red-400">{{ job()!.errorMessage }}</dd>
+          }
+        </dl>
+
+        @if (isRunning) {
+          <app-button
+            type="button"
+            variant="danger"
+            size="sm"
+            class="mt-3 inline-block"
+            [disabled]="cancelling()"
+            [loading]="cancelling()"
+            (clicked)="cancelJob()"
+          >
+            Cancelar job
+          </app-button>
+        }
+      }
+    </div>
+
+    <hr class="border-gray-100 dark:border-gray-700" />
+
+    <!-- Disparar novo job -->
+    @if (data.area.active) {
+      <div class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2">
+        <i class="ri-information-line mr-1"></i>
+        Esta área já está ativa e não pode ser reprocessada.
+      </div>
+    } @else {
+      <div [formGroup]="triggerForm">
+        <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Disparar novo job</h3>
+
+        <div class="flex gap-2 mb-3">
+          <app-button
+            type="button"
+            [variant]="modeControl.value === 'FULL' ? 'primary' : 'outline'"
+            size="sm"
+            (clicked)="setMode('FULL')"
+          >
+            Completo
+          </app-button>
+          <app-button
+            type="button"
+            [variant]="modeControl.value === 'CATCHUP' ? 'primary' : 'outline'"
+            size="sm"
+            (clicked)="setMode('CATCHUP')"
+          >
+            Incremental
+          </app-button>
+        </div>
+
+        @if (modeControl.value === 'FULL') {
+          <div class="mb-3">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Período (dias) <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              formControlName="periodDays"
+              min="1"
+              placeholder="30"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+            />
+          </div>
+        }
+
+        <app-button type="button" [disabled]="!canTrigger" [loading]="triggering()" (clicked)="trigger()">
+          Disparar job
+        </app-button>
+      </div>
+    }
+  </div>
+
+  <ng-container modal-footer>
+    <app-button variant="ghost" (clicked)="closeDialog()">Fechar</app-button>
+  </ng-container>
+</app-modal-shell>
