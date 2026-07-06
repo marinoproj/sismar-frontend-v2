@@ -7,6 +7,10 @@ import { PORT_CONFIG_REPOSITORY } from '../../repositories/port-config.repositor
 import { AuthService } from '../../../../../core/auth/auth.service';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { PortFormDialogComponent } from './port-form-dialog/port-form-dialog.component';
+import { AreaService } from '../../../areas/services/area.service';
+import { AREA_REPOSITORY } from '../../../areas/repositories/area.repository';
+import { PortAreaConfigService } from '../../services/port-area-config.service';
+import { PORT_AREA_CONFIG_REPOSITORY } from '../../repositories/port-area-config.repository';
 
 describe('PortsConfigPageComponent (create flow, real CDK Dialog)', () => {
   it('shows a success toast after submitting the create dialog', fakeAsync(() => {
@@ -23,6 +27,10 @@ describe('PortsConfigPageComponent (create flow, real CDK Dialog)', () => {
           useValue: { getAll: jest.fn().mockReturnValue(of([])), create },
         },
         { provide: AuthService, useValue: { hasFeature: () => true } },
+        AreaService,
+        { provide: AREA_REPOSITORY, useValue: { getAll: jest.fn().mockReturnValue(of([])) } },
+        PortAreaConfigService,
+        { provide: PORT_AREA_CONFIG_REPOSITORY, useValue: { get: jest.fn(), update: jest.fn() } },
       ],
     });
 

@@ -2,7 +2,7 @@
 
 > Documento vivo. Gerado por `/architecture-doc-generator`. Atualize executando a skill novamente após mudanças estruturais.
 >
-> Última atualização: 2026-07-04
+> Última atualização: 2026-07-06
 
 ---
 
@@ -138,6 +138,7 @@ Referências reais no projeto:
 - `src/app/features/dashboard/repositories/acoes.repository.ts`
 - `src/app/core/auth/auth.repository.ts`
 - `src/app/features/ports/repositories/ports.repository.ts` (só implementação HTTP real, sem mock — página de produto, não de exemplo)
+- `src/app/features/settings/ports/repositories/port-area-config.repository.ts` — segundo repositório dentro da mesma feature (`settings/ports`), para um conceito distinto do `Port` básico: a configuração de quais `Area`s representam o fundeio/canal de acesso/perímetro daquele porto (`PUT/GET /ports/{id}/config`). Ilustra que uma feature pode ter mais de um par repositório/serviço quando expõe mais de um agregado da API.
 
 ---
 
@@ -189,7 +190,7 @@ Fluxo: `ThemeService.toggleMode()` → altera signal `currentMode` → adiciona/
 /login        → LoginComponent                (público, lazy)
 /403          → ForbiddenComponent             (público, lazy — acesso negado por feature)
 /             → LayoutComponent               (guard: authGuard)
-  /           → redireciona para /home
+  /           → redireciona para /ports (feature PORTOS) ou /home (fallback) — ver nota abaixo
   /home       → HomeComponent                 (placeholder "em construção", sem feature)
   /ports      → portsRoutes (lazy, feature: PORTOS)
     /                → PortsListPageComponent  (feature PORTOS; providers: PortsService, PORTS_REPOSITORY=HTTP real)
@@ -226,6 +227,10 @@ Fluxo: `ThemeService.toggleMode()` → altera signal `currentMode` → adiciona/
   /maps       → MapsPageComponent             (lazy — só em desenvolvimento)
 **            → NotFoundComponent             (lazy)
 ```
+
+### Landing pós-login condicional por feature
+
+A rota raiz (`path: ''` dentro do `LayoutComponent`) usa duas entradas de rota com o mesmo `path: ''`, na ordem em que aparecem em `app.routes.ts`: a primeira tem `canMatch: [hasPortsFeatureMatch]` (`core/guards/landing.guard.ts`) e `redirectTo: 'ports'`; a segunda não tem guard e `redirectTo: 'home'`, servindo de fallback. Como o Router tenta cada config na ordem declarada e pula para a próxima quando `canMatch` retorna `false`, isso produz: usuário com a feature `PORTOS` sempre cai em `/ports`; os demais caem em `/home`. `LoginComponent` navega para `/` (não mais para `/home` fixo) após login bem-sucedido, deixando a raiz decidir — o mesmo vale para qualquer acesso direto/atualização de página em `/`.
 
 ### Páginas de exemplo excluídas do build de produção
 
@@ -285,7 +290,7 @@ Todos os componentes estão em `src/app/shared/ui/` e são standalone — import
 
 | Componente | Selector | Inputs principais | Uso |
 |-----------|----------|------------------|-----|
-| Table | `app-table` | `columns*`, `rows*`, `actions`, `loading`, `totalItems`, `pageSize`, `currentPage`, `striped` (default `true`), `searchable`, `searchPlaceholder` | Tabela genérica com colunas dinâmicas (incl. `ColumnDef.template` para células customizadas como badge/progress), ações por linha, paginação, striping opcional e busca embutida (`(searchChange)`) |
+| Table | `app-table` | `columns*`, `rows*`, `actions`, `actionsMode` (`'inline'` padrão / `'dropdown'`), `loading`, `totalItems`, `pageSize`, `currentPage`, `striped` (default `true`), `searchable`, `searchPlaceholder` | Tabela genérica com colunas dinâmicas (incl. `ColumnDef.template` para células customizadas como badge/progress), ações por linha (botões inline ou um `app-dropdown` por linha, conforme `actionsMode` — uma `TableAction` com `visible(row)` retornando `false` aparece como item desabilitado no modo dropdown, em vez de ser omitida), paginação, striping opcional e busca embutida (`(searchChange)`) |
 | KPI Card | `app-kpi-card` | `label*`, `value*`, `change*`, `icon*` | Card de métrica com variação percentual e ícone |
 | Stat Card | `app-stat-card` | `label*`, `value*`, `icon*` | Número simples com ícone, **sem** indicador de tendência — use quando não há histórico de comparação (diferente de `KpiCardComponent`/`TickerCardComponent`, que exigem `change`) |
 | Ticker Card | `app-ticker-card` | `symbol*`, `name*`, `currentValue*`, `change*`, `trend*`, `currency` | Card de ativo financeiro com tendência de alta/baixa |

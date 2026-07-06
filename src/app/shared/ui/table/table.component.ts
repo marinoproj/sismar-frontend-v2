@@ -1,17 +1,19 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { ColumnDef, TableAction } from '../../models/column-def.model';
+import { DropdownComponent, DropdownItem } from '../dropdown/dropdown.component';
 
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [NgClass, NgTemplateOutlet],
+  imports: [NgClass, NgTemplateOutlet, DropdownComponent],
   templateUrl: './table.component.html',
 })
 export class TableComponent {
   @Input({ required: true }) columns: ColumnDef[] = [];
   @Input({ required: true }) rows: Record<string, unknown>[] = [];
   @Input() actions: TableAction[] = [];
+  @Input() actionsMode: 'inline' | 'dropdown' = 'inline';
   @Input() loading = false;
   @Input() emptyMessage = 'Nenhum registro encontrado.';
   @Input() totalItems?: number;
@@ -83,6 +85,15 @@ export class TableComponent {
 
   isActionDisabled(action: TableAction, row: Record<string, unknown>): boolean {
     return action.disabled ? action.disabled(row) : false;
+  }
+
+  dropdownItemsFor(row: Record<string, unknown>): DropdownItem[] {
+    return this.actions.map((action) => ({
+      label: action.label,
+      icon: action.icon,
+      disabled: !this.isActionVisible(action, row) || this.isActionDisabled(action, row),
+      action: () => action.action(row),
+    }));
   }
 
   actionButtonClass(action: TableAction): string {

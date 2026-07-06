@@ -9,6 +9,8 @@ describe('AreaService', () => {
   let create: jest.Mock;
   let update: jest.Mock;
   let activate: jest.Mock;
+  let deactivate: jest.Mock;
+  let deleteArea: jest.Mock;
 
   const areas: Area[] = [
     { id: 1, name: 'Fundeio Norte', coordinates: [], portId: 1, active: true },
@@ -20,6 +22,8 @@ describe('AreaService', () => {
     create = jest.fn().mockReturnValue(of({}));
     update = jest.fn().mockReturnValue(of({}));
     activate = jest.fn().mockReturnValue(of(undefined));
+    deactivate = jest.fn().mockReturnValue(of(undefined));
+    deleteArea = jest.fn().mockReturnValue(of(undefined));
 
     TestBed.configureTestingModule({
       providers: [
@@ -31,6 +35,8 @@ describe('AreaService', () => {
             create,
             update,
             activate,
+            deactivate,
+            delete: deleteArea,
             getLastRetroactiveJob: jest.fn(),
             triggerRetroactiveJob: jest.fn(),
             cancelRetroactiveJob: jest.fn(),
@@ -85,6 +91,26 @@ describe('AreaService', () => {
     service.activate(2).subscribe();
 
     expect(activate).toHaveBeenCalledWith(2);
+    expect(getAll).toHaveBeenCalledTimes(1);
+  });
+
+  it('reloads the list after deactivating an area', () => {
+    const service = TestBed.inject(AreaService);
+    getAll.mockClear();
+
+    service.deactivate(1).subscribe();
+
+    expect(deactivate).toHaveBeenCalledWith(1);
+    expect(getAll).toHaveBeenCalledTimes(1);
+  });
+
+  it('reloads the list after deleting an area', () => {
+    const service = TestBed.inject(AreaService);
+    getAll.mockClear();
+
+    service.delete(2).subscribe();
+
+    expect(deleteArea).toHaveBeenCalledWith(2);
     expect(getAll).toHaveBeenCalledTimes(1);
   });
 });

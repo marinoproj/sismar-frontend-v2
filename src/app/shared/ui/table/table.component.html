@@ -86,23 +86,29 @@
             }
             @if (hasActions) {
               <td class="px-4 py-3 text-center">
-                <div class="flex items-center justify-center gap-1 flex-nowrap">
-                  @for (action of actions; track action.label) {
-                    @if (isActionVisible(action, row)) {
-                      <button
-                        [class]="actionButtonClass(action)"
-                        [disabled]="isActionDisabled(action, row)"
-                        (click)="action.action(row)"
-                        [title]="action.label"
-                      >
-                        @if (action.icon) {
-                          <i [class]="action.icon"></i>
-                        }
-                        {{ action.label }}
-                      </button>
+                @if (actionsMode === 'dropdown') {
+                  <div class="flex items-center justify-center">
+                    <app-dropdown [items]="dropdownItemsFor(row)" />
+                  </div>
+                } @else {
+                  <div class="flex items-center justify-center gap-1 flex-nowrap">
+                    @for (action of actions; track action.label) {
+                      @if (isActionVisible(action, row)) {
+                        <button
+                          [class]="actionButtonClass(action)"
+                          [disabled]="isActionDisabled(action, row)"
+                          (click)="action.action(row)"
+                          [title]="action.label"
+                        >
+                          @if (action.icon) {
+                            <i [class]="action.icon"></i>
+                          }
+                          {{ action.label }}
+                        </button>
+                      }
                     }
-                  }
-                </div>
+                  </div>
+                }
               </td>
             }
           </tr>

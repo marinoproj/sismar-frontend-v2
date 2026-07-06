@@ -51,7 +51,7 @@ describe('LoginComponent', () => {
     component.submit();
 
     expect(login).toHaveBeenCalledWith({ username: 'joao', password: 'senha123' }, 'SANTOS');
-    expect(navigate).toHaveBeenCalledWith(['/home']);
+    expect(navigate).toHaveBeenCalledWith(['/']);
     expect(dialogOpen).not.toHaveBeenCalled();
   });
 

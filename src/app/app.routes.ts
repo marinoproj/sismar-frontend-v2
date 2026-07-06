@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { featureGuard } from './core/guards/feature.guard';
+import { hasPortsFeatureMatch } from './core/guards/landing.guard';
 import { LayoutComponent } from './layout/layout.component';
 import { demoRoutes } from './demo-routes';
 
@@ -22,7 +23,10 @@ export const routes: Routes = [
     component: LayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      // A primeira que casar vence: usuário com a feature PORTOS cai em /ports,
+      // os demais caem em /home — vale tanto para o pós-login quanto para acesso direto a '/'.
+      { path: '', pathMatch: 'full', canMatch: [hasPortsFeatureMatch], redirectTo: 'ports' },
+      { path: '', pathMatch: 'full', redirectTo: 'home' },
       {
         path: 'home',
         data: { breadcrumb: 'Início' },

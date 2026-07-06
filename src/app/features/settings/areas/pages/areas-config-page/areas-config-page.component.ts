@@ -3,6 +3,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { TableComponent } from '../../../../../shared/ui/table/table.component';
 import { ButtonComponent } from '../../../../../shared/ui/button/button.component';
 import { BadgeComponent } from '../../../../../shared/ui/badge/badge.component';
+import { ConfirmDialogComponent } from '../../../../../shared/ui/modal/confirm-dialog/confirm-dialog.component';
 import { HasFeatureDirective } from '../../../../../shared/directives/has-feature.directive';
 import { ColumnDef, TableAction } from '../../../../../shared/models/column-def.model';
 import { AuthService } from '../../../../../core/auth/auth.service';
@@ -49,7 +50,6 @@ export class AreasConfigPageComponent {
     return this.areaService.areas().map((area) => ({
       ...area,
       portName: this.resolvePortName(area.portId),
-      coordinatesCount: area.coordinates.length,
     })) as unknown as Record<string, unknown>[];
   }
 
@@ -58,14 +58,13 @@ export class AreasConfigPageComponent {
       { key: 'name', label: 'Área' },
       { key: 'portName', label: 'Porto' },
       { key: 'active', label: 'Status', template: this.statusTpl },
-      { key: 'coordinatesCount', label: 'Qtd. coordenadas', align: 'right' },
     ];
   }
 
   get actions(): TableAction[] {
     return [
       {
-        label: 'Atualizar',
+        label: 'Editar',
         icon: 'ri-edit-line',
         variant: 'primary',
         visible: () => this.auth.hasFeature('CONFIGURACAO_AREA_EDITAR'),
@@ -80,11 +79,27 @@ export class AreasConfigPageComponent {
         action: (row) => this.activateArea(row as unknown as Area),
       },
       {
+        label: 'Inativar',
+        icon: 'ri-forbid-line',
+        variant: 'warning',
+        visible: (row) =>
+          this.auth.hasFeature('CONFIGURACAO_AREA_EDITAR') && (row as unknown as Area).active,
+        action: (row) => this.openDeactivateConfirm(row as unknown as Area),
+      },
+      {
         label: 'Job retroativo',
         icon: 'ri-history-line',
         variant: 'default',
         visible: () => this.auth.hasFeature('CONFIGURACAO_AREA_EDITAR'),
         action: (row) => this.openRetroactiveJobDialog(row as unknown as Area),
+      },
+      {
+        label: 'Excluir',
+        icon: 'ri-delete-bin-line',
+        variant: 'danger',
+        visible: (row) =>
+          this.auth.hasFeature('CONFIGURACAO_AREA_EXCLUIR') && !(row as unknown as Area).active,
+        action: (row) => this.openDeleteConfirm(row as unknown as Area),
       },
     ];
   }
@@ -167,6 +182,46 @@ export class AreasConfigPageComponent {
     this.areaService.activate(area.id).subscribe({
       next: () => this.toast.show({ message: `Área "${area.name}" ativada com sucesso.`, type: 'success' }),
       error: () => {}, // erro já é exibido pelo error.interceptor global
+    });
+  }
+
+  openDeactivateConfirm(area: Area): void {
+    const ref = this.dialog.open<boolean>(ConfirmDialogComponent, {
+      viewContainerRef: this.viewContainerRef,
+      data: {
+        title: 'Inativar área',
+        message: `Tem certeza que deseja inativar a área "${area.name}"? Ela deixará de gerar eventos de entrada/saída.`,
+        confirmLabel: 'Inativar',
+        variant: 'danger',
+      },
+    });
+
+    ref.closed.subscribe((confirmed) => {
+      if (!confirmed) return;
+      this.areaService.deactivate(area.id).subscribe({
+        next: () => this.toast.show({ message: `Área "${area.name}" inativada com sucesso.`, type: 'success' }),
+        error: () => {}, // erro já é exibido pelo error.interceptor global
+      });
+    });
+  }
+
+  openDeleteConfirm(area: Area): void {
+    const ref = this.dialog.open<boolean>(ConfirmDialogComponent, {
+      viewContainerRef: this.viewContainerRef,
+      data: {
+        title: 'Excluir área',
+        message: `Tem certeza que deseja excluir a área "${area.name}"? Essa ação não pode ser desfeita.`,
+        confirmLabel: 'Excluir',
+        variant: 'danger',
+      },
+    });
+
+    ref.closed.subscribe((confirmed) => {
+      if (!confirmed) return;
+      this.areaService.delete(area.id).subscribe({
+        next: () => this.toast.show({ message: `Área "${area.name}" excluída com sucesso.`, type: 'success' }),
+        error: () => {}, // erro já é exibido pelo error.interceptor global
+      });
     });
   }
 

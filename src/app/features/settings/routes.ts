@@ -12,6 +12,9 @@ import { BerthConfigService } from './berths/services/berth-config.service';
 import { AreaHttpRepository } from './areas/repositories/area-http.repository';
 import { AREA_REPOSITORY } from './areas/repositories/area.repository';
 import { AreaService } from './areas/services/area.service';
+import { PortAreaConfigHttpRepository } from './ports/repositories/port-area-config-http.repository';
+import { PORT_AREA_CONFIG_REPOSITORY } from './ports/repositories/port-area-config.repository';
+import { PortAreaConfigService } from './ports/services/port-area-config.service';
 
 export const settingsRoutes: Routes = [
   { path: '', redirectTo: 'ports', pathMatch: 'full' },
@@ -22,6 +25,10 @@ export const settingsRoutes: Routes = [
     providers: [
       PortConfigService,
       { provide: PORT_CONFIG_REPOSITORY, useClass: PortConfigHttpRepository },
+      AreaService,
+      { provide: AREA_REPOSITORY, useClass: AreaHttpRepository },
+      PortAreaConfigService,
+      { provide: PORT_AREA_CONFIG_REPOSITORY, useClass: PortAreaConfigHttpRepository },
     ],
     loadComponent: () =>
       import('./ports/pages/ports-config-page/ports-config-page.component').then(

@@ -75,6 +75,22 @@ describe('AreaHttpRepository', () => {
     req.flush(null);
   });
 
+  it('deactivates an area', () => {
+    repo.deactivate(6).subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/area/6/deactivate`);
+    expect(req.request.method).toBe('POST');
+    req.flush(null);
+  });
+
+  it('deletes an area', () => {
+    repo.delete(6).subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/area/6`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null);
+  });
+
   it('fetches the last retroactive job', () => {
     repo.getLastRetroactiveJob(6).subscribe((job) => {
       expect(job).toEqual({ mode: 'FULL', status: 'DONE' });

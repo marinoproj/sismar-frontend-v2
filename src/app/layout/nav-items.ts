@@ -14,7 +14,7 @@ export interface NavSection {
 
 const allNavSections: NavSection[] = [
   {
-    group: 'MAIN',
+    group: 'PRINCIPAL',
     items: [
       {
         label: 'Portos',

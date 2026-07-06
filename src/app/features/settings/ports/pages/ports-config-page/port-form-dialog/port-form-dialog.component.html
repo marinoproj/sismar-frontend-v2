@@ -1,101 +1,229 @@
 <app-modal-shell [title]="isEdit ? 'Editar porto' : 'Novo porto'" panelClass="max-w-lg" (closed)="cancel()">
-  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-4">
 
-    <!-- Nome -->
-    <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        Nome <span class="text-red-500">*</span>
-      </label>
-      <input
-        type="text"
-        formControlName="name"
-        placeholder="Porto de Santos"
-        [class.border-red-500]="nameControl.invalid && nameControl.touched"
-        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-      />
-      @if (nameControl.invalid && nameControl.touched) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400">Nome é obrigatório.</p>
-      }
-    </div>
+  <!-- Abas -->
+  <div class="flex gap-1 border-b border-gray-200 dark:border-gray-700 mb-4">
+    <button
+      type="button"
+      (click)="activeTab.set('dados')"
+      [class]="activeTab() === 'dados'
+        ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
+        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'"
+      class="px-4 py-2 text-sm font-semibold border-b-2 transition-colors"
+    >
+      Dados do porto
+    </button>
+    <button
+      type="button"
+      (click)="activeTab.set('areas')"
+      [class]="activeTab() === 'areas'
+        ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
+        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'"
+      class="px-4 py-2 text-sm font-semibold border-b-2 transition-colors"
+    >
+      Áreas do porto
+    </button>
+  </div>
 
-    <!-- País -->
-    <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        País <span class="text-red-500">*</span>
-      </label>
-      <input
-        type="text"
-        formControlName="country"
-        placeholder="Brasil"
-        [class.border-red-500]="countryControl.invalid && countryControl.touched"
-        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-      />
-      @if (countryControl.invalid && countryControl.touched) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400">País é obrigatório.</p>
-      }
-    </div>
+  @if (activeTab() === 'dados') {
+    <form [formGroup]="form" (ngSubmit)="save()" class="space-y-4">
 
-    <!-- Imagem do porto -->
-    <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        URL da imagem do porto <span class="text-red-500">*</span>
-      </label>
-      <input
-        type="text"
-        formControlName="imagePort"
-        placeholder="https://cdn.example.com/santos.jpg"
-        [class.border-red-500]="imagePortControl.invalid && imagePortControl.touched"
-        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-      />
-      @if (imagePortControl.invalid && imagePortControl.touched) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400">URL da imagem é obrigatória.</p>
-      }
-    </div>
-
-    <!-- Bandeira do país -->
-    <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        URL da bandeira do país <span class="text-red-500">*</span>
-      </label>
-      <input
-        type="text"
-        formControlName="countryFlag"
-        placeholder="https://cdn.example.com/br-flag.png"
-        [class.border-red-500]="countryFlagControl.invalid && countryFlagControl.touched"
-        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-      />
-      @if (countryFlagControl.invalid && countryFlagControl.touched) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400">URL da bandeira é obrigatória.</p>
-      }
-    </div>
-
-    <!-- Coordenadas -->
-    <div class="grid grid-cols-2 gap-3">
+      <!-- Nome -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Latitude</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Nome <span class="text-red-500">*</span>
+        </label>
         <input
-          type="number"
-          formControlName="latitude"
-          step="any"
-          placeholder="-23.9535"
+          type="text"
+          formControlName="name"
+          placeholder="Porto de Santos"
+          [class.border-red-500]="nameControl.invalid && nameControl.touched"
           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
         />
+        @if (nameControl.invalid && nameControl.touched) {
+          <p class="mt-1 text-xs text-red-600 dark:text-red-400">Nome é obrigatório.</p>
+        }
       </div>
+
+      <!-- País -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Longitude</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          País <span class="text-red-500">*</span>
+        </label>
         <input
-          type="number"
-          formControlName="longitude"
-          step="any"
-          placeholder="-46.3333"
+          type="text"
+          formControlName="country"
+          placeholder="Brasil"
+          [class.border-red-500]="countryControl.invalid && countryControl.touched"
           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
         />
+        @if (countryControl.invalid && countryControl.touched) {
+          <p class="mt-1 text-xs text-red-600 dark:text-red-400">País é obrigatório.</p>
+        }
       </div>
-    </div>
-  </form>
+
+      <!-- Imagem do porto -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          URL da imagem do porto <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          formControlName="imagePort"
+          placeholder="https://cdn.example.com/santos.jpg"
+          [class.border-red-500]="imagePortControl.invalid && imagePortControl.touched"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+        />
+        @if (imagePortControl.invalid && imagePortControl.touched) {
+          <p class="mt-1 text-xs text-red-600 dark:text-red-400">URL da imagem é obrigatória.</p>
+        }
+      </div>
+
+      <!-- Bandeira do país -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          URL da bandeira do país <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          formControlName="countryFlag"
+          placeholder="https://cdn.example.com/br-flag.png"
+          [class.border-red-500]="countryFlagControl.invalid && countryFlagControl.touched"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+        />
+        @if (countryFlagControl.invalid && countryFlagControl.touched) {
+          <p class="mt-1 text-xs text-red-600 dark:text-red-400">URL da bandeira é obrigatória.</p>
+        }
+      </div>
+
+      <!-- Coordenadas -->
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Latitude</label>
+          <input
+            type="number"
+            formControlName="latitude"
+            step="any"
+            placeholder="-23.9535"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Longitude</label>
+          <input
+            type="number"
+            formControlName="longitude"
+            step="any"
+            placeholder="-46.3333"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+          />
+        </div>
+      </div>
+    </form>
+  } @else {
+    <!-- Áreas do porto -->
+    @if (!isEdit) {
+      <p class="text-xs text-gray-500 dark:text-gray-400">
+        Disponível após salvar o porto pela primeira vez.
+      </p>
+    } @else if (areaConfigLoading()) {
+      <p class="text-xs text-gray-500 dark:text-gray-400">Carregando configuração de áreas...</p>
+    } @else {
+      <div class="space-y-3">
+        <!-- Fundeio -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Áreas de fundeio</label>
+          @if (portAreas.length === 0) {
+            <p class="text-xs text-gray-500 dark:text-gray-400">Nenhuma área vinculada a este porto ainda.</p>
+          } @else {
+            <input
+              type="text"
+              placeholder="Buscar área..."
+              [value]="anchorageSearchTerm()"
+              (input)="onAnchorageSearchChange($any($event.target).value)"
+              class="w-full mb-2 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+            />
+            @if (filteredAnchorageAreas.length === 0) {
+              <p class="text-xs text-gray-500 dark:text-gray-400">Nenhuma área encontrada.</p>
+            } @else {
+              <div class="space-y-1">
+                @for (area of pagedAnchorageAreas; track area.id) {
+                  <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                    <input
+                      type="checkbox"
+                      [checked]="isAnchorage(area.id)"
+                      [disabled]="isAnchorageDisabled(area.id)"
+                      (change)="toggleAnchorage(area.id)"
+                    />
+                    {{ area.name }}
+                  </label>
+                }
+              </div>
+              @if (anchorageTotalPages > 1) {
+                <div class="flex items-center justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  <button
+                    type="button"
+                    [disabled]="anchoragePage() === 1"
+                    (click)="goToAnchoragePage(anchoragePage() - 1)"
+                    class="hover:text-gray-700 dark:hover:text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <i class="ri-arrow-left-s-line"></i> Anterior
+                  </button>
+                  <span>Página {{ anchoragePage() }} de {{ anchorageTotalPages }}</span>
+                  <button
+                    type="button"
+                    [disabled]="anchoragePage() === anchorageTotalPages"
+                    (click)="goToAnchoragePage(anchoragePage() + 1)"
+                    class="hover:text-gray-700 dark:hover:text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    Próxima <i class="ri-arrow-right-s-line"></i>
+                  </button>
+                </div>
+              }
+            }
+          }
+        </div>
+
+        <!-- Canal de acesso -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Canal de acesso</label>
+          <select
+            [formControl]="accessChannelControl"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+          >
+            <option [ngValue]="null">Nenhuma</option>
+            @for (area of channelOptions; track area.id) {
+              <option [ngValue]="area.id">{{ area.name }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Área do porto -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Área do porto</label>
+          <select
+            [formControl]="portAreaControl"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+          >
+            <option [ngValue]="null">Nenhuma</option>
+            @for (area of portAreaOptions; track area.id) {
+              <option [ngValue]="area.id">{{ area.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    }
+  }
 
   <ng-container modal-footer>
-    <app-button variant="ghost" [disabled]="saving()" (clicked)="cancel()">Cancelar</app-button>
-    <app-button [disabled]="form.invalid || saving()" [loading]="saving()" (clicked)="save()">Salvar</app-button>
+    <app-button variant="ghost" [disabled]="saving() || areaConfigSaving()" (clicked)="cancel()">Cancelar</app-button>
+    @if (activeTab() === 'dados') {
+      <app-button [disabled]="form.invalid || saving()" [loading]="saving()" (clicked)="submitActiveTab()">
+        Salvar
+      </app-button>
+    } @else {
+      <app-button [disabled]="!isEdit || areaConfigSaving()" [loading]="areaConfigSaving()" (clicked)="submitActiveTab()">
+        Salvar
+      </app-button>
+    }
   </ng-container>
 </app-modal-shell>

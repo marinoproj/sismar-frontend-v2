@@ -101,6 +101,56 @@ describe('AreaFormDialogComponent', () => {
     expect(closeSpy).not.toHaveBeenCalled();
   });
 
+  it('moveCoordinateUp swaps values with the previous row, keeping the same controls in place', () => {
+    const component = setup();
+    fillCoordinate(component, 0, -23.9, -46.1);
+    fillCoordinate(component, 1, -23.8, -46.2);
+    fillCoordinate(component, 2, -23.7, -46.3);
+    const controlsBefore = component.coordinatesArray.controls.slice();
+
+    component.moveCoordinateUp(1);
+
+    expect(component.coordinatesArray.getRawValue()).toEqual([
+      { lat: -23.8, lon: -46.2 },
+      { lat: -23.9, lon: -46.1 },
+      { lat: -23.7, lon: -46.3 },
+    ]);
+    expect(component.coordinatesArray.controls).toEqual(controlsBefore);
+  });
+
+  it('moveCoordinateDown swaps values with the next row, keeping the same controls in place', () => {
+    const component = setup();
+    fillCoordinate(component, 0, -23.9, -46.1);
+    fillCoordinate(component, 1, -23.8, -46.2);
+    fillCoordinate(component, 2, -23.7, -46.3);
+    const controlsBefore = component.coordinatesArray.controls.slice();
+
+    component.moveCoordinateDown(1);
+
+    expect(component.coordinatesArray.getRawValue()).toEqual([
+      { lat: -23.9, lon: -46.1 },
+      { lat: -23.7, lon: -46.3 },
+      { lat: -23.8, lon: -46.2 },
+    ]);
+    expect(component.coordinatesArray.controls).toEqual(controlsBefore);
+  });
+
+  it('does not move the first row up nor the last row down', () => {
+    const component = setup();
+    fillCoordinate(component, 0, -23.9, -46.1);
+    fillCoordinate(component, 1, -23.8, -46.2);
+    fillCoordinate(component, 2, -23.7, -46.3);
+
+    component.moveCoordinateUp(0);
+    component.moveCoordinateDown(2);
+
+    expect(component.coordinatesArray.getRawValue()).toEqual([
+      { lat: -23.9, lon: -46.1 },
+      { lat: -23.8, lon: -46.2 },
+      { lat: -23.7, lon: -46.3 },
+    ]);
+  });
+
   it('strips the closing duplicate coordinate when editing an existing area', () => {
     const area: Area = {
       id: 1,

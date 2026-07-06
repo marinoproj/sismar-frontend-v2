@@ -135,9 +135,12 @@ export class AreaFormDialogComponent {
   }
 
   private swapCoordinates(a: number, b: number): void {
-    const controls = this.coordinatesArray.controls;
-    [controls[a], controls[b]] = [controls[b], controls[a]];
-    this.coordinatesArray.updateValueAndValidity();
+    const groupA = this.coordinatesArray.at(a);
+    const groupB = this.coordinatesArray.at(b);
+    const valueA = groupA.value;
+    const valueB = groupB.value;
+    groupA.patchValue(valueB);
+    groupB.patchValue(valueA);
   }
 
   private buildInitialCoordinateGroups(): FormGroup[] {

@@ -26,6 +26,14 @@ export class AreaHttpRepository implements AreaRepository {
     return this.http.post<void>(`${environment.apiUrl}/area/${id}/activate`, {});
   }
 
+  deactivate(id: number): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/area/${id}/deactivate`, {});
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/area/${id}`);
+  }
+
   getLastRetroactiveJob(id: number): Observable<RetroactiveJob | null> {
     return this.http
       .get<RetroactiveJob>(`${environment.apiUrl}/area/${id}/retroactive-jobs/last`, {

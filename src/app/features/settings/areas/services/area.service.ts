@@ -42,6 +42,14 @@ export class AreaService {
     return this.repo.activate(id).pipe(tap(() => this.reload$.next()));
   }
 
+  deactivate(id: number): Observable<void> {
+    return this.repo.deactivate(id).pipe(tap(() => this.reload$.next()));
+  }
+
+  delete(id: number): Observable<void> {
+    return this.repo.delete(id).pipe(tap(() => this.reload$.next()));
+  }
+
   getLastRetroactiveJob(id: number): Observable<RetroactiveJob | null> {
     return this.repo.getLastRetroactiveJob(id);
   }

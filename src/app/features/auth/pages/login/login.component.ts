@@ -102,7 +102,7 @@ export class LoginComponent {
     this.auth.login(credentials, clientCode).subscribe({
       next: () => {
         this.loading.set(false);
-        this.router.navigate(['/home']);
+        this.router.navigate(['/']);
       },
       error: () => this.loading.set(false),
     });

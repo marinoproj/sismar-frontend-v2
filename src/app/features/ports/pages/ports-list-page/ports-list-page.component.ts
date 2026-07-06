@@ -43,7 +43,6 @@ export class PortsListPageComponent {
       { key: 'name', label: 'Porto', template: this.portTpl },
       { key: 'country', label: 'País', template: this.countryTpl },
       { key: 'shipsInPort', label: 'Navios no porto', template: this.shipsTpl, align: 'center' },
-      { key: 'lastEquipmentUpdate', label: 'Última atualização', template: this.updatedTpl },
     ];
   }
 
