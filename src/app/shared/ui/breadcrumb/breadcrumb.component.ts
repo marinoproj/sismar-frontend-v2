@@ -51,6 +51,7 @@ export class BreadcrumbComponent {
     crumbs: Breadcrumb[] = [],
   ): Breadcrumb[] {
     for (const child of route.children) {
+      if (!child.snapshot) continue; // rota lazy ainda não resolvida no momento deste NavigationEnd
       const segment = child.snapshot.url.map((s) => s.path).join('/');
       const nextUrl = segment ? `${url}/${segment}` : url;
       if (child.snapshot.data['breadcrumb']) {

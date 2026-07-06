@@ -35,6 +35,11 @@ export const routes: Routes = [
         canActivate: [featureGuard],
         loadChildren: () => import('./features/ports/routes').then((m) => m.portsRoutes),
       },
+      {
+        path: 'settings',
+        data: { breadcrumb: 'Configurações' },
+        loadChildren: () => import('./features/settings/routes').then((m) => m.settingsRoutes),
+      },
       ...demoRoutes,
     ],
   },

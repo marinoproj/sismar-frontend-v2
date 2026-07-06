@@ -1,0 +1,113 @@
+<app-modal-shell [title]="isEdit ? 'Editar terminal' : 'Novo terminal'" panelClass="max-w-lg" (closed)="cancel()">
+  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-4">
+
+    <!-- Nome -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        Nome <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        formControlName="name"
+        placeholder="Terminal de Contêineres T2"
+        [class.border-red-500]="nameControl.invalid && nameControl.touched"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+      />
+      @if (nameControl.invalid && nameControl.touched) {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400">Nome é obrigatório.</p>
+      }
+    </div>
+
+    <!-- Código -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        Código <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        formControlName="code"
+        placeholder="TC2"
+        [class.border-red-500]="codeControl.invalid && codeControl.touched"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+      />
+      @if (codeControl.invalid && codeControl.touched) {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400">Código é obrigatório.</p>
+      }
+    </div>
+
+    <!-- Tipo -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        Tipo <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        formControlName="terminalType"
+        placeholder="CONTAINER"
+        [class.border-red-500]="terminalTypeControl.invalid && terminalTypeControl.touched"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+      />
+      @if (terminalTypeControl.invalid && terminalTypeControl.touched) {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400">Tipo é obrigatório.</p>
+      }
+    </div>
+
+    <!-- Porto -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        Porto <span class="text-red-500">*</span>
+      </label>
+      <select
+        formControlName="portId"
+        [class.border-red-500]="portIdControl.invalid && portIdControl.touched"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+      >
+        <option [ngValue]="null" disabled>Selecione um porto</option>
+        @for (port of ports; track port.id) {
+          <option [ngValue]="port.id">{{ port.name }}</option>
+        }
+      </select>
+      @if (portIdControl.invalid && portIdControl.touched) {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400">Porto é obrigatório.</p>
+      }
+    </div>
+
+    <!-- Imagem -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL da imagem do terminal</label>
+      <input
+        type="text"
+        formControlName="imageTerminal"
+        placeholder="https://cdn.example.com/terminal.jpg"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+      />
+    </div>
+
+    <!-- Coordenadas -->
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Latitude</label>
+        <input
+          type="number"
+          formControlName="latitude"
+          step="any"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+        />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Longitude</label>
+        <input
+          type="number"
+          formControlName="longitude"
+          step="any"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+        />
+      </div>
+    </div>
+  </form>
+
+  <ng-container modal-footer>
+    <app-button variant="ghost" [disabled]="saving()" (clicked)="cancel()">Cancelar</app-button>
+    <app-button [disabled]="form.invalid || saving()" [loading]="saving()" (clicked)="save()">Salvar</app-button>
+  </ng-container>
+</app-modal-shell>

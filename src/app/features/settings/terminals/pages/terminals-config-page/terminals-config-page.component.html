@@ -1,0 +1,60 @@
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Terminais</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Cadastro de terminais</p>
+    </div>
+    <ng-container *appHasFeature="'CONFIGURACAO_TERMINAL_ADICIONAR'">
+      <app-button (clicked)="openCreateDialog()">
+        <i class="ri-add-line"></i>
+        Novo terminal
+      </app-button>
+    </ng-container>
+  </div>
+
+  <!-- Tabela -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+
+    <!-- Filtro por porto -->
+    <div class="mb-4 max-w-xs">
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Filtrar por porto</label>
+      <select
+        (change)="onPortFilterChange($any($event.target).value)"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+      >
+        <option value="">Todos os portos</option>
+        @for (port of ports; track port.id) {
+          <option [value]="port.id">{{ port.name }}</option>
+        }
+      </select>
+    </div>
+
+    <app-table
+      [columns]="columns"
+      [rows]="rows"
+      [actions]="actions"
+      [searchable]="true"
+      searchPlaceholder="Pesquisar por nome do terminal..."
+      emptyMessage="Nenhum terminal encontrado."
+      (searchChange)="onSearchChange($event)"
+    />
+  </div>
+
+</div>
+
+<!-- Terminal: imagem (opcional) + nome -->
+<ng-template #terminalTpl let-row>
+  <div class="flex items-center gap-3">
+    @if (row['imageTerminal']) {
+      <img
+        [src]="row['imageTerminal']"
+        [alt]="row['name']"
+        class="w-14 h-10 rounded-lg object-cover shrink-0 bg-gray-100 dark:bg-gray-700"
+        onerror="this.style.visibility='hidden'"
+      />
+    }
+    <span class="font-medium text-gray-900 dark:text-white">{{ row['name'] }}</span>
+  </div>
+</ng-template>

@@ -1,0 +1,51 @@
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Portos</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Cadastro de portos</p>
+    </div>
+    <ng-container *appHasFeature="'CONFIGURACAO_PORTO_ADICIONAR'">
+      <app-button (clicked)="openCreateDialog()">
+        <i class="ri-add-line"></i>
+        Novo porto
+      </app-button>
+    </ng-container>
+  </div>
+
+  <!-- Tabela -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+    <app-table
+      [columns]="columns"
+      [rows]="rows"
+      [actions]="actions"
+      [searchable]="true"
+      searchPlaceholder="Pesquisar por nome do porto..."
+      emptyMessage="Nenhum porto encontrado."
+      (searchChange)="onSearchChange($event)"
+    />
+  </div>
+
+</div>
+
+<!-- Porto: imagem + nome -->
+<ng-template #portTpl let-row>
+  <div class="flex items-center gap-3">
+    <img
+      [src]="row['imagePort']"
+      [alt]="row['name']"
+      class="w-14 h-10 rounded-lg object-cover shrink-0 bg-gray-100 dark:bg-gray-700"
+      onerror="this.style.visibility='hidden'"
+    />
+    <span class="font-medium text-gray-900 dark:text-white">{{ row['name'] }}</span>
+  </div>
+</ng-template>
+
+<!-- País: bandeira + nome -->
+<ng-template #countryTpl let-row>
+  <div class="flex items-center gap-2">
+    <img [src]="row['countryFlag']" [alt]="row['country']" class="w-5 h-4 rounded-sm object-cover shrink-0" onerror="this.style.visibility='hidden'" />
+    <span>{{ row['country'] }}</span>
+  </div>
+</ng-template>

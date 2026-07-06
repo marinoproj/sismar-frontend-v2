@@ -75,7 +75,11 @@ const allNavSections: NavSection[] = [
       {
         label: 'Configurações',
         icon: 'ri-settings-3-line',
-        route: '/settings',
+        children: [
+          { label: 'Portos', icon: 'ri-anchor-line', route: '/settings/ports', feature: 'CONFIGURACAO_PORTO' },
+          { label: 'Terminais', icon: 'ri-building-4-line', route: '/settings/terminals', feature: 'CONFIGURACAO_TERMINAL' },
+          { label: 'Berços', icon: 'ri-ship-2-line', route: '/settings/berths', feature: 'CONFIGURACAO_BERCO' },
+        ],
       },
     ],
   },
@@ -90,13 +94,24 @@ export function getNavSections(options: NavVisibilityOptions): NavSection[] {
   return allNavSections
     .map((section) => ({
       group: section.group,
-      items: section.items.filter((item) => isNavItemVisible(item, options)),
+      items: section.items
+        .map((item) => filterNavItem(item, options))
+        .filter((item): item is NavItem => item !== null),
     }))
     .filter((section) => section.items.length > 0);
 }
 
-function isNavItemVisible(item: NavItem, options: NavVisibilityOptions): boolean {
-  if (item.demo && options.production) return false;
-  if (item.feature && !options.hasFeature(item.feature)) return false;
-  return true;
+function filterNavItem(item: NavItem, options: NavVisibilityOptions): NavItem | null {
+  if (item.demo && options.production) return null;
+  if (item.feature && !options.hasFeature(item.feature)) return null;
+
+  if (item.children) {
+    const children = item.children
+      .map((child) => filterNavItem(child, options))
+      .filter((child): child is NavItem => child !== null);
+    if (children.length === 0) return null;
+    return { ...item, children };
+  }
+
+  return item;
 }

@@ -1,0 +1,45 @@
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Berços</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Cadastro de berços</p>
+    </div>
+    <ng-container *appHasFeature="'CONFIGURACAO_BERCO_ADICIONAR'">
+      <app-button (clicked)="openCreateDialog()">
+        <i class="ri-add-line"></i>
+        Novo berço
+      </app-button>
+    </ng-container>
+  </div>
+
+  <!-- Tabela -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+    <app-table
+      [columns]="columns"
+      [rows]="rows"
+      [actions]="actions"
+      [searchable]="true"
+      searchPlaceholder="Pesquisar por nome do berço..."
+      emptyMessage="Nenhum berço encontrado."
+      (searchChange)="onSearchChange($event)"
+    />
+  </div>
+
+</div>
+
+<!-- Berço: imagem (opcional) + nome -->
+<ng-template #berthTpl let-row>
+  <div class="flex items-center gap-3">
+    @if (row['imageBerth']) {
+      <img
+        [src]="row['imageBerth']"
+        [alt]="row['name']"
+        class="w-14 h-10 rounded-lg object-cover shrink-0 bg-gray-100 dark:bg-gray-700"
+        onerror="this.style.visibility='hidden'"
+      />
+    }
+    <span class="font-medium text-gray-900 dark:text-white">{{ row['name'] }}</span>
+  </div>
+</ng-template>
