@@ -10,6 +10,7 @@ import { MapService } from './map.service';
 export class MapPolygonComponent implements OnInit, OnDestroy {
   @Input({ required: true }) points: [number, number][] = [];
   @Input() color?: string;
+  @Input() dashArray?: string;
   @Input() tooltipContent?: string;
 
   private polygon?: L.Polygon;
@@ -25,6 +26,7 @@ export class MapPolygonComponent implements OnInit, OnDestroy {
       fillColor: this.color ?? '#f59e0b',
       fillOpacity: 0.2,
       weight: 2,
+      dashArray: this.dashArray,
     });
 
     if (this.tooltipContent) {

@@ -314,7 +314,7 @@ Todos os componentes estão em `src/app/shared/ui/` e são standalone — import
 | Map | `app-map` | `center`, `zoom`, `height` | Mapa base |
 | Map Marker | `app-map-marker` | `lat*`, `lng*`, `title`, `popupContent` | Marcador no mapa |
 | Map Circle | `app-map-circle` | `center*`, `radius*`, `color`, `tooltipContent` | Área circular no mapa |
-| Map Polygon | `app-map-polygon` | `points*`, `color`, `tooltipContent` | Polígono no mapa |
+| Map Polygon | `app-map-polygon` | `points*`, `color`, `dashArray`, `tooltipContent` | Polígono no mapa |
 
 > Componentes de mapa são usados como filhos de `<app-map>` via content projection / serviço compartilhado (`MapService`).
 

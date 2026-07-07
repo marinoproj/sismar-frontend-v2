@@ -1,10 +1,12 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from '../../../../../../shared/ui/map/map.service';
+import { areaLabelHtml } from './area-map-style';
 
 /**
  * Rótulo de texto sempre visível (não depende de clique), usado para exibir
- * o nome da área junto ao primeiro vértice do seu perímetro no mapa.
+ * o nome da área (e um badge "Inativo" quando aplicável) junto ao primeiro
+ * vértice do seu perímetro no mapa.
  */
 @Component({
   selector: 'app-area-name-label',
@@ -14,6 +16,7 @@ import { MapService } from '../../../../../../shared/ui/map/map.service';
 export class AreaNameLabelComponent implements OnInit, OnDestroy {
   @Input({ required: true }) position: [number, number] = [0, 0];
   @Input({ required: true }) name = '';
+  @Input() active = true;
 
   private marker?: L.Marker;
 
@@ -28,7 +31,7 @@ export class AreaNameLabelComponent implements OnInit, OnDestroy {
         className: 'area-name-label',
         // Estilo inline (não classes Tailwind): este HTML é inserido via innerHTML pelo Leaflet,
         // fora do template Angular, então não pode depender do CSS/variáveis de tema do app.
-        html: `<span style="display:inline-block;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.9);color:#111827;font-size:11px;font-weight:600;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3);">${this.escapeHtml(this.name)}</span>`,
+        html: areaLabelHtml(this.name, this.active),
         iconSize: [0, 0],
         iconAnchor: [0, 0],
       }),
@@ -39,13 +42,5 @@ export class AreaNameLabelComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.marker?.remove();
-  }
-
-  private escapeHtml(value: string): string {
-    return value
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
   }
 }

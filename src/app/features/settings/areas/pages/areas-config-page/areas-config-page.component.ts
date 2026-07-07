@@ -46,6 +46,10 @@ export class AreasConfigPageComponent {
     return this.areaService.areas();
   }
 
+  get ports() {
+    return this.portConfigService.ports();
+  }
+
   get rows(): Record<string, unknown>[] {
     return this.areaService.areas().map((area) => ({
       ...area,

@@ -1,4 +1,4 @@
-import { activeAreaPoints, activeAreas, toLatLngPoints } from './area-map-bounds';
+import { areaPoints, toLatLngPoints } from './area-map-bounds';
 import { Area } from '../../../models/area.model';
 
 describe('area-map-bounds', () => {
@@ -36,15 +36,11 @@ describe('area-map-bounds', () => {
     ]);
   });
 
-  it('filters only active areas', () => {
-    expect(activeAreas([active, inactive])).toEqual([active]);
+  it('collects points from every given area, regardless of status', () => {
+    expect(areaPoints([active, inactive])).toEqual([...toLatLngPoints(active), ...toLatLngPoints(inactive)]);
   });
 
-  it('collects points only from active areas, ignoring inactive ones', () => {
-    expect(activeAreaPoints([active, inactive])).toEqual(toLatLngPoints(active));
-  });
-
-  it('returns an empty array when there are no active areas', () => {
-    expect(activeAreaPoints([inactive])).toEqual([]);
+  it('returns an empty array when there are no areas', () => {
+    expect(areaPoints([])).toEqual([]);
   });
 });

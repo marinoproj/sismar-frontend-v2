@@ -43,6 +43,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
       <app-area-map-view
         [areas]="areas"
+        [ports]="ports"
         [startDrawingRequestId]="startDrawingRequestId()"
         (drawFinished)="onDrawFinished($event)"
       />

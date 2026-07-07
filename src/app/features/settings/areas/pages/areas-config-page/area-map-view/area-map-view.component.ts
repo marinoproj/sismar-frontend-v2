@@ -16,8 +16,16 @@ import { MapPolygonComponent } from '../../../../../../shared/ui/map/map-polygon
 import { MapService } from '../../../../../../shared/ui/map/map.service';
 import { ButtonComponent } from '../../../../../../shared/ui/button/button.component';
 import { Area, AreaCoordinate } from '../../../models/area.model';
+import { PortConfig } from '../../../../ports/models/port-config.model';
 import { AreaNameLabelComponent } from './area-name-label.component';
-import { activeAreaPoints, activeAreas as filterActiveAreas, toLatLngPoints } from './area-map-bounds';
+import { areaPoints, toLatLngPoints } from './area-map-bounds';
+import { areaPolygonStyle } from './area-map-style';
+import {
+  allPortFilterIds,
+  derivePortFilterOptions,
+  filterAreasForMap,
+  PortFilterOption,
+} from './area-map-filters';
 import { closePolygonCoordinates, isCloseEnoughToClose, MIN_DRAW_POINTS_TO_CLOSE } from './area-draw';
 
 const DEFAULT_CENTER: [number, number] = [-15.78, -47.93];
@@ -35,6 +43,7 @@ export class AreaMapViewComponent implements AfterViewInit, OnChanges, OnDestroy
   private readonly mapService = inject(MapService);
 
   @Input({ required: true }) areas: Area[] = [];
+  @Input() ports: PortConfig[] = [];
 
   /** Incrementar este valor (ex.: startDrawingRequestId + 1) solicita o início de um novo desenho, mesmo que o anterior tenha sido cancelado. */
   @Input() startDrawingRequestId = 0;
@@ -49,6 +58,11 @@ export class AreaMapViewComponent implements AfterViewInit, OnChanges, OnDestroy
   readonly closeHintActive = signal(false);
   readonly minPointsToClose = MIN_DRAW_POINTS_TO_CLOSE;
 
+  readonly filtersCollapsed = signal(false);
+  readonly showActive = signal(true);
+  readonly showInactive = signal(true);
+  private readonly selectedPortIds = signal<Set<number | null> | null>(null);
+
   private mapReady = false;
   private pendingBeginDrawing = false;
   private lastHandledDrawingRequestId = 0;
@@ -60,17 +74,62 @@ export class AreaMapViewComponent implements AfterViewInit, OnChanges, OnDestroy
   private mapMouseMoveHandler?: (event: L.LeafletMouseEvent) => void;
   private keydownHandler?: (event: KeyboardEvent) => void;
 
-  get activeAreas(): Area[] {
-    return filterActiveAreas(this.areas);
+  get portFilterOptions(): PortFilterOption[] {
+    return derivePortFilterOptions(this.areas, this.ports);
+  }
+
+  get visibleAreas(): Area[] {
+    return filterAreasForMap(this.areas, {
+      showActive: this.showActive(),
+      showInactive: this.showInactive(),
+      selectedPortIds: this.effectiveSelectedPortIds(),
+    });
+  }
+
+  isPortSelected(id: number | null): boolean {
+    return this.effectiveSelectedPortIds().has(id);
+  }
+
+  toggleActiveFilter(): void {
+    this.showActive.update((v) => !v);
+    this.fitBoundsToVisibleAreas();
+  }
+
+  toggleInactiveFilter(): void {
+    this.showInactive.update((v) => !v);
+    this.fitBoundsToVisibleAreas();
+  }
+
+  togglePortFilter(id: number | null): void {
+    const next = new Set(this.effectiveSelectedPortIds());
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+    this.selectedPortIds.set(next);
+    this.fitBoundsToVisibleAreas();
+  }
+
+  private effectiveSelectedPortIds(): Set<number | null> {
+    return this.selectedPortIds() ?? allPortFilterIds(this.portFilterOptions);
   }
 
   polygonPoints(area: Area): [number, number][] {
     return toLatLngPoints(area);
   }
 
+  polygonColor(area: Area): string {
+    return areaPolygonStyle(area.active).color;
+  }
+
+  polygonDashArray(area: Area): string | undefined {
+    return areaPolygonStyle(area.active).dashArray;
+  }
+
   ngAfterViewInit(): void {
     this.mapReady = true;
-    this.fitBoundsToActiveAreas();
+    this.fitBoundsToVisibleAreas();
     if (this.pendingBeginDrawing) {
       this.pendingBeginDrawing = false;
       this.beginDrawing();
@@ -79,7 +138,7 @@ export class AreaMapViewComponent implements AfterViewInit, OnChanges, OnDestroy
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['areas'] && this.mapReady) {
-      this.fitBoundsToActiveAreas();
+      this.fitBoundsToVisibleAreas();
     }
     if (
       changes['startDrawingRequestId'] &&
@@ -216,11 +275,11 @@ export class AreaMapViewComponent implements AfterViewInit, OnChanges, OnDestroy
     this.keydownHandler = undefined;
   }
 
-  private fitBoundsToActiveAreas(): void {
+  private fitBoundsToVisibleAreas(): void {
     const map = this.mapService.getMap();
     if (!map) return;
 
-    const points = activeAreaPoints(this.areas);
+    const points = areaPoints(this.visibleAreas);
     if (points.length === 0) return;
 
     // Adiado: logo após a criação, o container do mapa pode ainda não ter o tamanho
