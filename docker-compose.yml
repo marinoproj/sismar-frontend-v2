@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  sismar-frontend-v2:
+    image: leodevelb/sismar-frontend-v2:1.0.0
+    container_name: sismar-frontend-v2
+    ports:
+      - "8081:80"
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - marino-network
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+
+networks:
+  marino-network:
+    external: true
