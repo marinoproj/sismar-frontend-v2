@@ -39,6 +39,10 @@ export class TerminalsConfigPageComponent {
     })) as unknown as Record<string, unknown>[];
   }
 
+  get loading(): boolean {
+    return this.terminalConfigService.loading();
+  }
+
   get columns(): ColumnDef[] {
     return [
       { key: 'name', label: 'Terminal', template: this.terminalTpl },

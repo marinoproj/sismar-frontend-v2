@@ -1,5 +1,6 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
+import { BerthConfig } from '../models/berth-config.model';
 import { BerthConfigService } from './berth-config.service';
 import { BERTH_CONFIG_REPOSITORY } from '../repositories/berth-config.repository';
 import { BerthConfigInput } from '../models/berth-config.model';
@@ -77,5 +78,32 @@ describe('BerthConfigService', () => {
 
     expect(deleteFn).toHaveBeenCalledWith(10);
     expect(getAll).toHaveBeenCalledTimes(1);
+  }));
+
+  it('tracks loading independently of the data, true while the request is in flight and false once it resolves', fakeAsync(() => {
+    const request$ = new Subject<BerthConfig[]>();
+    getAll.mockReturnValue(request$.asObservable());
+    const service = TestBed.inject(BerthConfigService);
+    tick(300);
+
+    expect(service.loading()).toBe(true);
+
+    request$.next([]);
+    request$.complete();
+
+    expect(service.loading()).toBe(false);
+  }));
+
+  it('sets loading back to false when the request fails', fakeAsync(() => {
+    const request$ = new Subject<BerthConfig[]>();
+    getAll.mockReturnValue(request$.asObservable());
+    const service = TestBed.inject(BerthConfigService);
+    tick(300);
+
+    expect(service.loading()).toBe(true);
+
+    request$.error(new Error('falhou'));
+
+    expect(service.loading()).toBe(false);
   }));
 });

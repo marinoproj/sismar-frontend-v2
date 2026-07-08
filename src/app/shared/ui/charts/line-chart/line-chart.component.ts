@@ -4,23 +4,28 @@ import { ApexAxisChartSeries, ApexChart, ApexXAxis, ApexDataLabels, ApexTheme, A
 import { ThemeService } from '../../../../core/services/theme.service';
 import { THEME_CONFIG } from '../../../../core/config/theme.config';
 import { ChartData } from '../../../models/chart-data.model';
+import { SkeletonComponent } from '../../skeleton/skeleton.component';
 
 @Component({
   selector: 'app-line-chart',
   standalone: true,
-  imports: [NgApexchartsModule],
+  imports: [NgApexchartsModule, SkeletonComponent],
   template: `
-    <apx-chart
-      [series]="chartSeries()"
-      [chart]="chartConfig()"
-      [xaxis]="xAxisConfig"
-      [dataLabels]="dataLabels"
-      [stroke]="strokeConfig"
-      [grid]="gridConfig()"
-      [theme]="chartTheme()"
-      [title]="titleConfig()"
-      [colors]="resolvedColors()"
-    />
+    @if (loading) {
+      <app-skeleton variant="chart" [height]="height" />
+    } @else {
+      <apx-chart
+        [series]="chartSeries()"
+        [chart]="chartConfig()"
+        [xaxis]="xAxisConfig"
+        [dataLabels]="dataLabels"
+        [stroke]="strokeConfig"
+        [grid]="gridConfig()"
+        [theme]="chartTheme()"
+        [title]="titleConfig()"
+        [colors]="resolvedColors()"
+      />
+    }
   `,
 })
 export class LineChartComponent {
@@ -30,6 +35,7 @@ export class LineChartComponent {
   @Input() height = 350;
   @Input() colors?: string[];
   @Input() showLegend = true;
+  @Input() loading = false;
 
   private readonly theme = inject(ThemeService);
   private readonly config = inject(THEME_CONFIG);

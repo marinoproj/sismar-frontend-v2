@@ -3,22 +3,27 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { ApexChart, ApexNonAxisChartSeries, ApexTheme, ApexTitleSubtitle, ApexLegend, ApexStroke } from 'ng-apexcharts';
 import { ThemeService } from '../../../../core/services/theme.service';
 import { THEME_CONFIG } from '../../../../core/config/theme.config';
+import { SkeletonComponent } from '../../skeleton/skeleton.component';
 
 @Component({
   selector: 'app-pie-chart',
   standalone: true,
-  imports: [NgApexchartsModule],
+  imports: [NgApexchartsModule, SkeletonComponent],
   template: `
-    <apx-chart
-      [series]="data"
-      [labels]="labels"
-      [chart]="chartConfig()"
-      [stroke]="strokeConfig()"
-      [theme]="chartTheme()"
-      [title]="titleConfig()"
-      [legend]="legendConfig()"
-      [colors]="resolvedColors()"
-    />
+    @if (loading) {
+      <app-skeleton variant="chart" [height]="height" />
+    } @else {
+      <apx-chart
+        [series]="data"
+        [labels]="labels"
+        [chart]="chartConfig()"
+        [stroke]="strokeConfig()"
+        [theme]="chartTheme()"
+        [title]="titleConfig()"
+        [legend]="legendConfig()"
+        [colors]="resolvedColors()"
+      />
+    }
   `,
 })
 export class PieChartComponent {
@@ -31,6 +36,7 @@ export class PieChartComponent {
   @Input() colors?: string[];
   @Input() showLegend = true;
   @Input() legendPosition: 'top' | 'right' | 'bottom' | 'left' = 'bottom';
+  @Input() loading = false;
 
   private readonly theme = inject(ThemeService);
   private readonly config = inject(THEME_CONFIG);

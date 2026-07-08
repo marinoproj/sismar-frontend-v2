@@ -1,5 +1,6 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
+import { TerminalConfig } from '../models/terminal-config.model';
 import { TerminalConfigService } from './terminal-config.service';
 import { TERMINAL_CONFIG_REPOSITORY } from '../repositories/terminal-config.repository';
 import { TerminalConfigInput } from '../models/terminal-config.model';
@@ -99,5 +100,32 @@ describe('TerminalConfigService', () => {
 
     expect(deleteFn).toHaveBeenCalledWith(5);
     expect(getAll).toHaveBeenCalledTimes(1);
+  }));
+
+  it('tracks loading independently of the data, true while the request is in flight and false once it resolves', fakeAsync(() => {
+    const request$ = new Subject<TerminalConfig[]>();
+    getAll.mockReturnValue(request$.asObservable());
+    const service = TestBed.inject(TerminalConfigService);
+    tick(300);
+
+    expect(service.loading()).toBe(true);
+
+    request$.next([]);
+    request$.complete();
+
+    expect(service.loading()).toBe(false);
+  }));
+
+  it('sets loading back to false when the request fails', fakeAsync(() => {
+    const request$ = new Subject<TerminalConfig[]>();
+    getAll.mockReturnValue(request$.asObservable());
+    const service = TestBed.inject(TerminalConfigService);
+    tick(300);
+
+    expect(service.loading()).toBe(true);
+
+    request$.error(new Error('falhou'));
+
+    expect(service.loading()).toBe(false);
   }));
 });

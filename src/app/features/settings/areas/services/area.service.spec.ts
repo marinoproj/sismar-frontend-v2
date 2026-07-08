@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { AreaService } from './area.service';
 import { AREA_REPOSITORY } from '../repositories/area.repository';
 import { Area, AreaInput } from '../models/area.model';
@@ -112,5 +112,30 @@ describe('AreaService', () => {
 
     expect(deleteArea).toHaveBeenCalledWith(2);
     expect(getAll).toHaveBeenCalledTimes(1);
+  });
+
+  it('tracks loading independently of the data, true while the request is in flight and false once it resolves', () => {
+    const request$ = new Subject<Area[]>();
+    getAll.mockReturnValue(request$.asObservable());
+    const service = TestBed.inject(AreaService);
+
+    expect(service.loading()).toBe(true);
+
+    request$.next(areas);
+    request$.complete();
+
+    expect(service.loading()).toBe(false);
+  });
+
+  it('sets loading back to false when the request fails', () => {
+    const request$ = new Subject<Area[]>();
+    getAll.mockReturnValue(request$.asObservable());
+    const service = TestBed.inject(AreaService);
+
+    expect(service.loading()).toBe(true);
+
+    request$.error(new Error('falhou'));
+
+    expect(service.loading()).toBe(false);
   });
 });

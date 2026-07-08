@@ -2,12 +2,13 @@ import { Component, computed, inject } from '@angular/core';
 import { StatCardComponent } from '../../../../../shared/ui/stat-card/stat-card.component';
 import { PieChartComponent } from '../../../../../shared/ui/charts/pie-chart/pie-chart.component';
 import { ButtonComponent } from '../../../../../shared/ui/button/button.component';
+import { SkeletonComponent } from '../../../../../shared/ui/skeleton/skeleton.component';
 import { PortsService } from '../../../services/ports.service';
 
 @Component({
   selector: 'app-general-tab',
   standalone: true,
-  imports: [StatCardComponent, PieChartComponent, ButtonComponent],
+  imports: [StatCardComponent, PieChartComponent, ButtonComponent, SkeletonComponent],
   templateUrl: './general-tab.component.html',
 })
 export class GeneralTabComponent {
@@ -20,8 +21,8 @@ export class GeneralTabComponent {
     return this.portsService.details();
   }
 
-  get isLoading(): boolean {
-    return !this.details;
+  get loading(): boolean {
+    return this.portsService.detailsLoading();
   }
 
   readonly occupancySeries = computed(() => {

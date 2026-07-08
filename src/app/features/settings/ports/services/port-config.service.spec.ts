@@ -1,5 +1,5 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { PortConfigService } from './port-config.service';
 import { PORT_CONFIG_REPOSITORY } from '../repositories/port-config.repository';
 import { PortConfig, PortConfigInput } from '../models/port-config.model';
@@ -78,5 +78,49 @@ describe('PortConfigService', () => {
 
     expect(deleteFn).toHaveBeenCalledWith(1);
     expect(getAll).toHaveBeenCalledTimes(1);
+  }));
+
+  it('tracks loading independently of the data, true while the request is in flight and false once it resolves', fakeAsync(() => {
+    const request$ = new Subject<PortConfig[]>();
+    getAll.mockReturnValue(request$.asObservable());
+    const service = TestBed.inject(PortConfigService);
+    tick(300);
+
+    expect(service.loading()).toBe(true);
+
+    request$.next([]);
+    request$.complete();
+
+    expect(service.loading()).toBe(false);
+  }));
+
+  it('sets loading back to false when the request fails', fakeAsync(() => {
+    const request$ = new Subject<PortConfig[]>();
+    getAll.mockReturnValue(request$.asObservable());
+    const service = TestBed.inject(PortConfigService);
+    tick(300);
+
+    expect(service.loading()).toBe(true);
+
+    request$.error(new Error('falhou'));
+
+    expect(service.loading()).toBe(false);
+  }));
+
+  it('sets loading back to true on a subsequent search after the first load completed', fakeAsync(() => {
+    const service = TestBed.inject(PortConfigService);
+    tick(300);
+    expect(service.loading()).toBe(false);
+
+    const request$ = new Subject<PortConfig[]>();
+    getAll.mockReturnValue(request$.asObservable());
+    service.search('santos');
+    tick(300);
+
+    expect(service.loading()).toBe(true);
+
+    request$.next([]);
+    request$.complete();
+    expect(service.loading()).toBe(false);
   }));
 });

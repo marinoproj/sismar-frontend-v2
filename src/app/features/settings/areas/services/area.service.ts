@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Observable, Subject } from 'rxjs';
-import { startWith, switchMap, tap } from 'rxjs/operators';
+import { finalize, startWith, switchMap, tap } from 'rxjs/operators';
 import { AREA_REPOSITORY } from '../repositories/area.repository';
 import { Area, AreaInput, RetroactiveJob, TriggerRetroactiveJobInput } from '../models/area.model';
 
@@ -12,10 +12,16 @@ export class AreaService {
   private readonly searchTerm = signal('');
   private readonly reload$ = new Subject<void>();
 
+  private readonly loadingSignal = signal(false);
+  readonly loading = this.loadingSignal.asReadonly();
+
   private readonly allAreas = toSignal(
     this.reload$.pipe(
       startWith(undefined),
-      switchMap(() => this.repo.getAll()),
+      switchMap(() => {
+        this.loadingSignal.set(true);
+        return this.repo.getAll().pipe(finalize(() => this.loadingSignal.set(false)));
+      }),
     ),
     { initialValue: [] as Area[] },
   );

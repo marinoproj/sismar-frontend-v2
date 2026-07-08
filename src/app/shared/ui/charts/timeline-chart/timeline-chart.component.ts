@@ -4,23 +4,28 @@ import { ApexAxisChartSeries, ApexChart, ApexXAxis, ApexTheme, ApexTitleSubtitle
 import { ThemeService } from '../../../../core/services/theme.service';
 import { THEME_CONFIG } from '../../../../core/config/theme.config';
 import { TimelineData } from '../../../models/chart-data.model';
+import { SkeletonComponent } from '../../skeleton/skeleton.component';
 
 @Component({
   selector: 'app-timeline-chart',
   standalone: true,
-  imports: [NgApexchartsModule],
+  imports: [NgApexchartsModule, SkeletonComponent],
   template: `
-    <apx-chart
-      [series]="chartSeries()"
-      [chart]="chartConfig()"
-      [xaxis]="xAxisConfig"
-      [plotOptions]="plotOptions"
-      [tooltip]="tooltipConfig"
-      [grid]="gridConfig()"
-      [theme]="chartTheme()"
-      [title]="titleConfig()"
-      [colors]="resolvedColors()"
-    />
+    @if (loading) {
+      <app-skeleton variant="chart" [height]="height" />
+    } @else {
+      <apx-chart
+        [series]="chartSeries()"
+        [chart]="chartConfig()"
+        [xaxis]="xAxisConfig"
+        [plotOptions]="plotOptions"
+        [tooltip]="tooltipConfig"
+        [grid]="gridConfig()"
+        [theme]="chartTheme()"
+        [title]="titleConfig()"
+        [colors]="resolvedColors()"
+      />
+    }
   `,
 })
 export class TimelineChartComponent {
@@ -29,6 +34,7 @@ export class TimelineChartComponent {
   @Input() description?: string;
   @Input() height = 350;
   @Input() colors?: string[];
+  @Input() loading = false;
 
   private readonly theme = inject(ThemeService);
   private readonly config = inject(THEME_CONFIG);

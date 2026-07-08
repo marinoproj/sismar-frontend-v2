@@ -28,7 +28,7 @@ export class PortsListPageComponent {
   }
 
   get isLoading(): boolean {
-    return !this.summary;
+    return this.portsService.summaryLoading();
   }
 
   get filteredPorts(): Record<string, unknown>[] {

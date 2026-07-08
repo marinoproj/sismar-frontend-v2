@@ -31,6 +31,10 @@ export class PortsConfigPageComponent {
     return this.portConfigService.ports() as unknown as Record<string, unknown>[];
   }
 
+  get loading(): boolean {
+    return this.portConfigService.loading();
+  }
+
   get columns(): ColumnDef[] {
     return [
       { key: 'name', label: 'Porto', template: this.portTpl },

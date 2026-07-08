@@ -34,6 +34,10 @@ export class BerthsConfigPageComponent {
     })) as unknown as Record<string, unknown>[];
   }
 
+  get loading(): boolean {
+    return this.berthConfigService.loading();
+  }
+
   get columns(): ColumnDef[] {
     return [
       { key: 'name', label: 'Berço', template: this.berthTpl },

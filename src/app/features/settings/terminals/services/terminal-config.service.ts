@@ -1,7 +1,7 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, finalize, map, switchMap, tap } from 'rxjs/operators';
 import { TERMINAL_CONFIG_REPOSITORY } from '../repositories/terminal-config.repository';
 import { TerminalConfig, TerminalConfigInput } from '../models/terminal-config.model';
 
@@ -13,6 +13,9 @@ export class TerminalConfigService {
   private readonly portId$ = new BehaviorSubject<number | null>(null);
   private readonly reload$ = new Subject<void>();
 
+  private readonly loadingSignal = signal(false);
+  readonly loading = this.loadingSignal.asReadonly();
+
   readonly terminals = toSignal(
     merge(
       combineLatest([
@@ -21,12 +24,15 @@ export class TerminalConfigService {
       ]),
       this.reload$.pipe(map((): [string, number | null] => [this.nameTerm$.value, this.portId$.value])),
     ).pipe(
-      switchMap(([name, portId]) =>
-        this.repo.getAll({
-          ...(name ? { name } : {}),
-          ...(portId != null ? { portId } : {}),
-        }),
-      ),
+      switchMap(([name, portId]) => {
+        this.loadingSignal.set(true);
+        return this.repo
+          .getAll({
+            ...(name ? { name } : {}),
+            ...(portId != null ? { portId } : {}),
+          })
+          .pipe(finalize(() => this.loadingSignal.set(false)));
+      }),
     ),
     { initialValue: [] as TerminalConfig[] },
   );

@@ -140,6 +140,42 @@ Referências reais no projeto:
 - `src/app/features/ports/repositories/ports.repository.ts` (só implementação HTTP real, sem mock — página de produto, não de exemplo)
 - `src/app/features/settings/ports/repositories/port-area-config.repository.ts` — segundo repositório dentro da mesma feature (`settings/ports`), para um conceito distinto do `Port` básico: a configuração de quais `Area`s representam o fundeio/canal de acesso/perímetro daquele porto (`PUT/GET /ports/{id}/config`). Ilustra que uma feature pode ter mais de um par repositório/serviço quando expõe mais de um agregado da API.
 
+### Convenção: sinal `loading` nos serviços
+
+Todo serviço que busca dados de uma página real de produto expõe um sinal `loading: Signal<boolean>` **explícito e independente do sinal de dado** — `true` do início ao fim de qualquer busca (inicial, recarregamento por busca/filtro, ou por mudança de parâmetro de rota), `false` ao final tanto em sucesso quanto em erro. Não usar "o dado ainda é `null`/vazio" como proxy de loading — isso quebra em recarregamentos numa instância já existente do serviço, onde o dado antigo permanece até o novo chegar.
+
+Padrão para serviços orientados a `toSignal`/`switchMap` (listagens com busca/filtro/`reload$`):
+
+```ts
+private readonly loadingSignal = signal(false);
+readonly loading = this.loadingSignal.asReadonly();
+
+readonly items = toSignal(
+  trigger$.pipe(
+    switchMap((arg) => {
+      this.loadingSignal.set(true);
+      return this.repo.getAll(arg).pipe(finalize(() => this.loadingSignal.set(false)));
+    }),
+  ),
+  { initialValue: [] },
+);
+```
+
+Padrão para buscas imperativas (ex.: carregar um registro específico por id):
+
+```ts
+private readonly detailsLoadingSignal = signal(false);
+readonly detailsLoading = this.detailsLoadingSignal.asReadonly();
+
+loadDetails(id: number): void {
+  this.details.set(null); // evita que o registro anterior aparente ser o novo enquanto carrega
+  this.detailsLoadingSignal.set(true);
+  this.repo.getDetails(id).pipe(finalize(() => this.detailsLoadingSignal.set(false))).subscribe((d) => this.details.set(d));
+}
+```
+
+Referências reais: `PortConfigService`, `TerminalConfigService`, `BerthConfigService`, `AreaService` (padrão de listagem), `PortsService` (ambos os padrões — `summary`/`summaryLoading` e `details`/`detailsLoading`).
+
 ---
 
 ## 4. Sistema de tema
@@ -244,6 +280,8 @@ O menu lateral (`src/app/layout/nav-items.ts`) segue a mesma regra em runtime: `
 
 `/ports/:id` é o primeiro caso no projeto de uma página com abas, cada uma com sua própria feature: `PortDetailsPageComponent` é o shell da rota (`TabsComponent` + `<router-outlet>`), e cada aba (`geral`, `historico`, `terminais`, `alertas`) é uma rota filha com `data: { feature: '<FEATURE>' }` + `canActivate: [featureGuard]`. O `TabsComponent` (catálogo, seção 6) calcula independentemente, via `AuthService.hasFeature`, quais abas ficam bloqueadas na UI — os dois mecanismos (guard na rota, bloqueio visual na aba) leem a mesma feature mas são checados em pontos diferentes, então **ao adicionar uma aba nova, declare a feature nos dois lugares** (no `data` da rota filha e no array `tabs` passado ao `TabsComponent`).
 
+**Cuidado com reuso de instância em rotas com parâmetro**: o Angular reaproveita a mesma instância de componente ao navegar entre `/ports/1` e `/ports/2` (mesmo `routeConfig`, parâmetro diferente) — não há `RouteReuseStrategy` customizada neste projeto. Por isso, `PortDetailsPageComponent` não carrega os detalhes do porto uma única vez no construtor; ele assina `ActivatedRoute.paramMap` (com `takeUntilDestroyed()`) e recarrega a cada mudança de `:id`. Qualquer página nova com parâmetro de rota que carregue dados deve seguir o mesmo padrão, em vez de usar `route.snapshot.paramMap` uma única vez.
+
 ### Providers por rota
 
 Features de dashboard usam **providers escopados à rota** para isolar serviços de negócio:
@@ -291,21 +329,24 @@ Todos os componentes estão em `src/app/shared/ui/` e são standalone — import
 | Componente | Selector | Inputs principais | Uso |
 |-----------|----------|------------------|-----|
 | Table | `app-table` | `columns*`, `rows*`, `actions`, `actionsMode` (`'inline'` padrão / `'dropdown'`), `loading`, `totalItems`, `pageSize`, `currentPage`, `striped` (default `true`), `searchable`, `searchPlaceholder` | Tabela genérica com colunas dinâmicas (incl. `ColumnDef.template` para células customizadas como badge/progress), ações por linha (botões inline ou um `app-dropdown` por linha, conforme `actionsMode` — uma `TableAction` com `visible(row)` retornando `false` aparece como item desabilitado no modo dropdown, em vez de ser omitida), paginação, striping opcional e busca embutida (`(searchChange)`) |
-| KPI Card | `app-kpi-card` | `label*`, `value*`, `change*`, `icon*` | Card de métrica com variação percentual e ícone |
-| Stat Card | `app-stat-card` | `label*`, `value*`, `icon*` | Número simples com ícone, **sem** indicador de tendência — use quando não há histórico de comparação (diferente de `KpiCardComponent`/`TickerCardComponent`, que exigem `change`) |
-| Ticker Card | `app-ticker-card` | `symbol*`, `name*`, `currentValue*`, `change*`, `trend*`, `currency` | Card de ativo financeiro com tendência de alta/baixa |
+| KPI Card | `app-kpi-card` | `label*`, `value*`, `change*`, `icon*`, `loading` | Card de métrica com variação percentual e ícone |
+| Stat Card | `app-stat-card` | `label*`, `value*`, `icon*`, `loading` | Número simples com ícone, **sem** indicador de tendência — use quando não há histórico de comparação (diferente de `KpiCardComponent`/`TickerCardComponent`, que exigem `change`) |
+| Ticker Card | `app-ticker-card` | `symbol*`, `name*`, `currentValue*`, `change*`, `trend*`, `currency`, `loading` | Card de ativo financeiro com tendência de alta/baixa |
+| Skeleton | `app-skeleton` | `variant` (`'card'` padrão / `'chart'`), `height` (só `'chart'`) | Placeholder "piscando" (`animate-pulse`) usado por todo componente com input `loading`; não é chamado diretamente pelas páginas, e sim renderizado internamente por cada componente quando `loading` é `true` |
 
 ### Gráficos (ApexCharts via ng-apexcharts)
 
+Todos aceitam `loading` (padrão `false`); quando `true`, renderizam `app-skeleton` (variante `chart`, na altura de `height`) no lugar do `apx-chart`.
+
 | Componente | Selector | Inputs principais | Tipo |
 |-----------|----------|------------------|------|
-| Line Chart | `app-line-chart` | `data*`, `title*`, `description`, `height`, `colors`, `showLegend` | Linha |
-| Bar Chart | `app-bar-chart` | `data*`, `title*`, `orientation`, `height`, `colors`, `showLegend` | Barras (vertical/horizontal) |
-| Area Chart | `app-area-chart` | `data*`, `title*`, `stacked`, `height`, `colors`, `showLegend` | Área (empilhada ou não) |
-| Mixed Chart | `app-mixed-chart` | `data*`, `title*`, `height`, `colors`, `showLegend` | Linha + barras combinados |
-| Timeline Chart | `app-timeline-chart` | `data*`, `title*`, `height`, `colors` | Timeline / Gantt |
-| Pie Chart | `app-pie-chart` | `labels*`, `series*`, `title*`, `donut`, `height`, `colors` | Pizza ou donut |
-| Time Series | `app-time-series-chart` | `data*`, `title*`, `zoomEnabled`, `height`, `colors` | Série temporal com zoom |
+| Line Chart | `app-line-chart` | `data*`, `title*`, `description`, `height`, `colors`, `showLegend`, `loading` | Linha |
+| Bar Chart | `app-bar-chart` | `data*`, `title*`, `orientation`, `height`, `colors`, `showLegend`, `loading` | Barras (vertical/horizontal) |
+| Area Chart | `app-area-chart` | `data*`, `title*`, `stacked`, `height`, `colors`, `showLegend`, `loading` | Área (empilhada ou não) |
+| Mixed Chart | `app-mixed-chart` | `data*`, `title*`, `height`, `colors`, `showLegend`, `loading` | Linha + barras combinados |
+| Timeline Chart | `app-timeline-chart` | `data*`, `title*`, `height`, `colors`, `loading` | Timeline / Gantt |
+| Pie Chart | `app-pie-chart` | `labels*`, `series*`, `title*`, `donut`, `height`, `colors`, `loading` | Pizza ou donut |
+| Time Series | `app-time-series-chart` | `data*`, `title*`, `zoomEnabled`, `height`, `colors`, `loading` | Série temporal com zoom |
 
 ### Mapas (Leaflet)
 

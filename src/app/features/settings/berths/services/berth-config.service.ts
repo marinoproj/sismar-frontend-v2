@@ -1,7 +1,7 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, finalize, map, switchMap, tap } from 'rxjs/operators';
 import { BERTH_CONFIG_REPOSITORY } from '../repositories/berth-config.repository';
 import { BerthConfig, BerthConfigInput } from '../models/berth-config.model';
 
@@ -12,11 +12,19 @@ export class BerthConfigService {
   private readonly searchTerm$ = new BehaviorSubject<string>('');
   private readonly reload$ = new Subject<void>();
 
+  private readonly loadingSignal = signal(false);
+  readonly loading = this.loadingSignal.asReadonly();
+
   readonly berths = toSignal(
     merge(
       this.searchTerm$.pipe(debounceTime(300), distinctUntilChanged()),
       this.reload$.pipe(map(() => this.searchTerm$.value)),
-    ).pipe(switchMap((name) => this.repo.getAll(name ? { name } : undefined))),
+    ).pipe(
+      switchMap((name) => {
+        this.loadingSignal.set(true);
+        return this.repo.getAll(name ? { name } : undefined).pipe(finalize(() => this.loadingSignal.set(false)));
+      }),
+    ),
     { initialValue: [] as BerthConfig[] },
   );
 

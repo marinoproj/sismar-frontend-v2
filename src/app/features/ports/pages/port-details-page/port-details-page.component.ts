@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TabsComponent, TabItem } from '../../../../shared/ui/tabs/tabs.component';
 import { PortsService } from '../../services/ports.service';
 
@@ -25,7 +26,11 @@ export class PortDetailsPageComponent {
   }
 
   constructor() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.portsService.loadDetails(id);
+    // Reage a mudanças no parâmetro de rota (não só na criação do componente): o Angular
+    // reaproveita esta mesma instância ao navegar entre /ports/1 e /ports/2 (mesmo routeConfig),
+    // então carregar só uma vez no construtor deixaria os dados do porto anterior na tela.
+    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
+      this.portsService.loadDetails(Number(params.get('id')));
+    });
   }
 }
